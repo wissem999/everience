@@ -194,23 +194,26 @@ export function Layout() {
         {sidebarContent}
       </aside>
 
+      {/* Mobile hamburger - always visible on dark bg */}
+      <button
+        type="button"
+        onClick={() => setMobileOpen((o) => !o)}
+        className="fixed top-0 left-0 z-[60] flex h-14 w-14 items-center justify-center bg-gray-900 text-gray-300 transition-colors hover:text-white lg:hidden"
+      >
+        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          {mobileOpen ? (
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+          ) : (
+            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+          )}
+        </svg>
+      </button>
+
       {/* Main content */}
       <main className="flex-1 min-w-0 overflow-auto">
         {/* Mobile top bar */}
         <div className="sticky top-0 z-30 flex items-center gap-3 border-b border-gray-200 bg-white/80 px-4 py-3 backdrop-blur-sm lg:hidden">
-          <button
-            type="button"
-            onClick={() => setMobileOpen((o) => !o)}
-            className="flex h-9 w-9 items-center justify-center rounded-xl text-gray-600 transition-colors hover:bg-gray-100"
-          >
-            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              {mobileOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-              )}
-            </svg>
-          </button>
+          <div className="w-9" />
           <div className="flex items-center gap-2">
             <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600">
               <svg className="h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

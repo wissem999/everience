@@ -217,11 +217,11 @@ export function Users() {
                         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100">
                           <User className="h-4 w-4 text-gray-500" />
                         </div>
-                        <span className="font-medium text-gray-900">{u.nom}</span>
+                        <span className="min-w-0 cell-wrap font-medium text-gray-900">{u.nom}</span>
                       </div>
                     </td>
                     <td className="px-6 py-4 text-gray-500 min-w-0">
-                      <span className="truncate block">{u.email}</span>
+                      <span className="cell-wrap block">{u.email}</span>
                     </td>
                     <td className="px-6 py-3">
                       {u.role === 'admin' ? (
@@ -275,8 +275,8 @@ export function Users() {
                     <User className="h-5 w-5 text-gray-500" />
                   </div>
                   <div className="min-w-0">
-                    <p className="font-medium text-gray-900 truncate">{u.nom}</p>
-                    <p className="text-sm text-gray-500 truncate">{u.email}</p>
+                    <p className="font-medium text-gray-900 cell-wrap">{u.nom}</p>
+                    <p className="text-sm text-gray-500 cell-wrap">{u.email}</p>
                   </div>
                 </div>
                 <div className="flex items-center justify-between">

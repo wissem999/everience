@@ -52,78 +52,63 @@ export function Layout() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const sidebarContent = (
+  const sidebarContent = (isMobile: boolean) => (
     <>
-      {/* Logo */}
-      <div className="flex h-16 shrink-0 items-center gap-2.5 border-b border-gray-800 px-4">
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg shadow-blue-500/25">
-          <svg className="h-4.5 w-4.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5M9 11.25v1.5M12 9v3.75m3-6v6" />
-          </svg>
-        </div>
-        <span className={`text-base font-bold text-white tracking-tight transition-all duration-300 ${collapsed ? 'hidden lg:hidden' : ''}`}>Everience</span>
-        {/* Desktop collapse toggle */}
+      {/* Logo + hamburger */}
+      <div className="flex h-16 shrink-0 items-center border-b border-gray-800 px-4">
         <button
           type="button"
-          onClick={() => setCollapsed(!collapsed)}
-          className="ml-auto hidden lg:flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-white/10 hover:text-white"
+          onClick={() => isMobile ? setMobileOpen((o) => !o) : setCollapsed(!collapsed)}
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-gray-300 transition-colors hover:bg-white/10 hover:text-white"
         >
-          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            {collapsed ? (
-              <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            {(isMobile ? !mobileOpen : collapsed) ? (
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
             ) : (
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             )}
           </svg>
         </button>
-        {/* Mobile close */}
-        <button
-          type="button"
-          onClick={() => setMobileOpen(false)}
-          className="ml-auto flex lg:hidden h-7 w-7 shrink-0 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-white/10 hover:text-white"
-        >
-          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
+        <span className={`ml-2.5 text-base font-bold text-white tracking-tight transition-all duration-300 whitespace-nowrap overflow-hidden ${
+          (isMobile ? !mobileOpen : collapsed) ? 'w-0 opacity-0' : 'w-auto opacity-100'
+        }`}>Everience</span>
       </div>
 
       {/* Navigation */}
       <nav className="flex-1 space-y-1 px-3 py-4 overflow-y-auto">
-        <p className={`mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-gray-500 transition-all duration-300 ${collapsed ? 'hidden' : ''}`}>Menu</p>
         {NAV_ITEMS.map((item) => (
           <NavLink
             key={item.to}
             to={item.to}
-            onClick={() => setMobileOpen(false)}
+            onClick={() => isMobile && setMobileOpen(false)}
             className={({ isActive }) =>
-              `nav-item ${isActive ? 'active' : ''} ${collapsed ? 'justify-center px-0' : ''}`
+              `nav-item ${isActive ? 'active' : ''} ${(isMobile ? !mobileOpen : collapsed) ? 'justify-center px-0' : ''}`
             }
-            title={collapsed ? item.label : undefined}
+            title={(isMobile ? !mobileOpen : collapsed) ? item.label : undefined}
           >
             <Icon d={item.icon} />
-            {!collapsed && <span>{item.label}</span>}
+            {!(isMobile ? !mobileOpen : collapsed) && <span>{item.label}</span>}
           </NavLink>
         ))}
 
         {user?.role === 'admin' && (
           <>
-            {!collapsed && (
+            {!(isMobile ? !mobileOpen : collapsed) && (
               <p className="mb-2 mt-4 px-3 text-[10px] font-semibold uppercase tracking-widest text-gray-500">Admin</p>
             )}
-            {collapsed && <div className="mx-3 my-3 border-t border-gray-700" />}
+            {(isMobile ? !mobileOpen : collapsed) && <div className="mx-3 my-3 border-t border-gray-700" />}
             {ADMIN_ITEMS.map((item) => (
               <NavLink
                 key={item.to}
                 to={item.to}
-                onClick={() => setMobileOpen(false)}
+                onClick={() => isMobile && setMobileOpen(false)}
                 className={({ isActive }) =>
-                  `nav-item ${isActive ? 'active' : ''} ${collapsed ? 'justify-center px-0' : ''}`
+                  `nav-item ${isActive ? 'active' : ''} ${(isMobile ? !mobileOpen : collapsed) ? 'justify-center px-0' : ''}`
                 }
-                title={collapsed ? item.label : undefined}
+                title={(isMobile ? !mobileOpen : collapsed) ? item.label : undefined}
               >
                 <Icon d={item.icon} />
-                {!collapsed && <span>{item.label}</span>}
+                {!(isMobile ? !mobileOpen : collapsed) && <span>{item.label}</span>}
               </NavLink>
             ))}
           </>
@@ -132,7 +117,7 @@ export function Layout() {
 
       {/* User profile */}
       <div className="border-t border-gray-800 p-3 shrink-0">
-        {!collapsed ? (
+        {!(isMobile ? !mobileOpen : collapsed) ? (
           <div className="flex items-center gap-3 rounded-xl bg-white/5 px-3 py-2.5">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 text-xs font-bold text-white">
               {user?.nom?.charAt(0)?.toUpperCase()}
@@ -174,7 +159,7 @@ export function Layout() {
       <aside
         className={`hidden lg:flex flex-col border-r border-gray-800 bg-gray-900 transition-all duration-300 shrink-0 ${collapsed ? 'w-[68px]' : 'w-64'}`}
       >
-        {sidebarContent}
+        {sidebarContent(false)}
       </aside>
 
       {/* Mobile overlay */}
@@ -185,44 +170,19 @@ export function Layout() {
         />
       )}
 
-      {/* Mobile Sidebar */}
+      {/* Mobile Sidebar - always shows thin strip with hamburger when closed */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-gray-800 bg-gray-900 transition-transform duration-300 lg:hidden ${
-          mobileOpen ? 'translate-x-0' : '-translate-x-full'
+        className={`fixed inset-y-0 left-0 z-50 flex flex-col border-r border-gray-800 bg-gray-900 transition-all duration-300 lg:hidden ${
+          mobileOpen ? 'w-64' : 'w-14'
         }`}
       >
-        {sidebarContent}
+        {sidebarContent(true)}
       </aside>
-
-      {/* Mobile hamburger - always visible on dark bg */}
-      <button
-        type="button"
-        onClick={() => setMobileOpen((o) => !o)}
-        className="fixed top-0 left-0 z-[60] flex h-14 w-14 items-center justify-center bg-gray-900 text-gray-300 transition-colors hover:text-white lg:hidden"
-      >
-        <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          {mobileOpen ? (
-            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-          ) : (
-            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-          )}
-        </svg>
-      </button>
 
       {/* Main content */}
       <main className="flex-1 min-w-0 overflow-auto">
-        {/* Mobile top bar */}
-        <div className="sticky top-0 z-30 flex items-center gap-3 border-b border-gray-200 bg-white/80 px-4 py-3 backdrop-blur-sm lg:hidden">
-          <div className="w-9" />
-          <div className="flex items-center gap-2">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600">
-              <svg className="h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5M9 11.25v1.5M12 9v3.75m3-6v6" />
-              </svg>
-            </div>
-            <span className="text-sm font-bold text-gray-900">Everience</span>
-          </div>
-        </div>
+        {/* Spacer for mobile sidebar strip */}
+        <div className="h-14 lg:hidden" />
 
         <div className="mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
           <Outlet />

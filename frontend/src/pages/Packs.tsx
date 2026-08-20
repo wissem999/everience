@@ -216,14 +216,14 @@ export function Packs() {
                   style={{ animationDelay: `${(i + 2) * 50}ms` }}
                 >
                   <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 min-w-0">
                       <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50">
                         <Package className="h-4 w-4 text-blue-600" />
                       </div>
-                      <span className="font-medium text-gray-900">{p.nom}</span>
+                      <span className="font-medium text-gray-900 min-w-0 cell-wrap">{p.nom}</span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-gray-500">{p.description ?? '—'}</td>
+                  <td className="px-6 py-4 text-gray-500 cell-wrap">{p.description ?? '—'}</td>
                   <td className="px-6 py-4">
                     <div className="flex flex-wrap gap-1.5">
                       {p.items.map((item) => (
@@ -297,7 +297,7 @@ export function Packs() {
                 <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-50">
                   <Package className="h-4 w-4 text-blue-600" />
                 </div>
-                <span className="font-medium text-gray-900 truncate">{p.nom}</span>
+                <span className="font-medium text-gray-900 cell-wrap">{p.nom}</span>
               </div>
               <div className="flex items-center gap-1 shrink-0">
                 <button
@@ -319,7 +319,7 @@ export function Packs() {
               </div>
             </div>
             {p.description && (
-              <p className="mt-2 ml-11 text-sm text-gray-500 line-clamp-2 break-words">{p.description}</p>
+              <p className="mt-2 ml-11 text-sm text-gray-500 cell-wrap">{p.description}</p>
             )}
             <div className="mt-3 ml-11 flex flex-wrap gap-1.5">
               {p.items.map((item) => (

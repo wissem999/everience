@@ -255,8 +255,8 @@ export function Articles() {
                 {products.map((p, i) => (
                   <tr key={p.id} className={cn('hover:bg-gray-50/80 transition-colors', i % 2 === 0 ? 'bg-white' : 'bg-gray-50/30')}>
                     <td className="px-5 py-3.5 font-mono text-gray-600">{p.num_article}</td>
-                    <td className="px-5 py-3.5 font-medium text-gray-800 max-w-[200px] truncate" title={p.nom}>{p.nom}</td>
-                    <td className="px-5 py-3.5 text-gray-500 max-w-[200px] truncate" title={p.description || ''}>{p.description || '—'}</td>
+                    <td className="px-5 py-3.5 font-medium text-gray-800 cell-wrap">{p.nom}</td>
+                    <td className="px-5 py-3.5 text-gray-500 cell-wrap">{p.description || '—'}</td>
                     <td className="px-5 py-3.5">{Number(p.prix).toFixed(2)} TND</td>
                     <td className="px-5 py-3.5">{p.stock}</td>
                     <td className="px-5 py-3.5">{p.stock_min}</td>
@@ -303,13 +303,13 @@ export function Articles() {
                 <div key={p.id} className="p-4 space-y-3">
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
-                      <p className="font-medium text-gray-900 truncate" title={p.nom}>{p.nom}</p>
+                      <p className="font-medium text-gray-900 cell-wrap">{p.nom}</p>
                       <p className="text-xs text-gray-500 font-mono">{p.num_article}</p>
                     </div>
                     <StatusBadge status={p.status} />
                   </div>
                   {p.description && (
-                    <p className="text-sm text-gray-500 line-clamp-2">{p.description}</p>
+                    <p className="text-sm text-gray-500 cell-wrap">{p.description}</p>
                   )}
                   <div className="grid grid-cols-3 gap-3 text-sm">
                     <div>

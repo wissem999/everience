@@ -21,10 +21,10 @@ export function ConfirmDialog({
   if (!root) return null;
 
   const modal = (
-    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', overflowY: 'auto' }}>
       <div
         className="animate-scale-in w-full"
-        style={{ maxWidth: '24rem', borderRadius: '1rem', backgroundColor: '#fff', padding: 'clamp(1rem, 3vw, 1.5rem)', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)' }}
+        style={{ maxWidth: '24rem', borderRadius: '1rem', backgroundColor: '#fff', padding: 'clamp(1rem, 3vw, 1.5rem)', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)', maxHeight: '90dvh', overflowY: 'auto' }}
       >
         <div style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '3rem', height: '3rem', borderRadius: '9999px', backgroundColor: danger ? '#fef2f2' : '#eff6ff' }}>
           {danger ? (
@@ -38,7 +38,7 @@ export function ConfirmDialog({
           )}
         </div>
         <h2 style={{ fontSize: '1.125rem', fontWeight: 600, color: '#111827' }}>{title}</h2>
-        <p style={{ marginTop: '0.5rem', fontSize: '0.875rem', color: '#6b7280', lineHeight: 1.625 }}>{message}</p>
+        <p style={{ marginTop: '0.5rem', fontSize: '0.875rem', color: '#6b7280', lineHeight: 1.625, overflowWrap: 'break-word', wordBreak: 'break-word' }}>{message}</p>
         <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'flex-end', gap: '0.75rem' }}>
           <button
             type="button"

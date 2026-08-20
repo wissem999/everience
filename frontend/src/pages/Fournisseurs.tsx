@@ -230,11 +230,11 @@ export function Fournisseurs() {
               <tbody className="divide-y divide-gray-100">
                 {rows.map((f) => (
                   <tr key={f.id} className="transition-colors hover:bg-gray-50">
-                    <td className="max-w-[150px] truncate px-6 py-4 text-sm font-medium text-gray-900" title={f.nom}>{f.nom}</td>
-                    <td className="max-w-[150px] truncate px-6 py-4 text-sm text-gray-600" title={f.ville ?? '—'}>{f.ville ?? '—'}</td>
-                    <td className="max-w-[150px] truncate px-6 py-4 text-sm text-gray-600" title={f.pays ?? '—'}>{f.pays ?? '—'}</td>
-                    <td className="max-w-[150px] truncate px-6 py-4 text-sm text-gray-600" title={f.telephone ?? '—'}>{f.telephone ?? '—'}</td>
-                    <td className="max-w-[150px] truncate px-6 py-4 text-sm text-gray-600" title={f.mail ?? '—'}>{f.mail ?? '—'}</td>
+                    <td className="cell-wrap px-6 py-4 text-sm font-medium text-gray-900">{f.nom}</td>
+                    <td className="cell-wrap px-6 py-4 text-sm text-gray-600">{f.ville ?? '—'}</td>
+                    <td className="cell-wrap px-6 py-4 text-sm text-gray-600">{f.pays ?? '—'}</td>
+                    <td className="cell-wrap px-6 py-4 text-sm text-gray-600">{f.telephone ?? '—'}</td>
+                    <td className="cell-wrap px-6 py-4 text-sm text-gray-600">{f.mail ?? '—'}</td>
                     <td className="whitespace-nowrap px-6 py-4">
                       {f.groupe === 'privilegie' ? (
                         <span className="inline-flex items-center rounded-full bg-amber-50 px-3 py-1 text-xs font-medium text-amber-700">
@@ -291,7 +291,7 @@ export function Fournisseurs() {
                     <p>{[f.ville, f.pays].filter(Boolean).join(', ')}</p>
                   )}
                   {f.telephone && <p>{f.telephone}</p>}
-                  {f.mail && <p className="truncate" title={f.mail}>{f.mail}</p>}
+                  {f.mail && <p className="cell-wrap">{f.mail}</p>}
                 </div>
                 <div className="flex gap-2">
                   <button

@@ -353,19 +353,19 @@ export function Commandes() {
                       className="border-b border-gray-100 transition-colors hover:bg-gray-50/50"
                       style={{ animationDelay: `${idx * 75}ms` }}
                     >
-                      <td className="px-4 py-3 font-medium text-gray-800">
-                        <span className="max-w-[150px] truncate inline-block" title={c.nr_commande}>{c.nr_commande}</span>
+                      <td className="px-4 py-3 font-medium text-gray-800 cell-wrap">
+                        {c.nr_commande}
                       </td>
                       <td className="px-4 py-3">{c.date.slice(0, 16).replace('T', ' ')}</td>
                       <td className="px-4 py-3">{c.nr_article ?? '-'}</td>
-                      <td className="px-4 py-3">
-                        <span className="max-w-[150px] truncate inline-block" title={c.article_nom ?? '-'}>{c.article_nom ?? '-'}</span>
+                      <td className="px-4 py-3 cell-wrap">
+                        {c.article_nom ?? '-'}
                       </td>
                       <td className="px-4 py-3">{c.nombre}</td>
                       <td className="px-4 py-3">{c.prix_unitaire != null ? c.prix_unitaire : '-'}</td>
                       <td className="px-4 py-3">{c.prix_total != null ? c.prix_total : '-'}</td>
-                      <td className="px-4 py-3">
-                        <span className="max-w-[150px] truncate inline-block" title={c.fournisseur ?? '-'}>{c.fournisseur ?? '-'}</span>
+                      <td className="px-4 py-3 cell-wrap">
+                        {c.fournisseur ?? '-'}
                       </td>
                       <td className="px-4 py-3">
                         <span
@@ -492,7 +492,7 @@ export function Commandes() {
                 >
                   {/* Top: nr_commande + statut */}
                   <div className="flex items-center justify-between gap-2">
-                    <span className="font-medium text-gray-800 truncate" title={c.nr_commande}>{c.nr_commande}</span>
+                    <span className="font-medium text-gray-800 cell-wrap">{c.nr_commande}</span>
                     <span className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium shadow-sm ${badge.cls}`}>
                       {badge.label}
                     </span>
@@ -505,7 +505,7 @@ export function Commandes() {
                     </div>
                     <div>
                       <span className="text-gray-500">Article</span>
-                      <p className="text-gray-800 truncate" title={c.article_nom ?? '-'}>
+                      <p className="text-gray-800 cell-wrap">
                         <span className="text-gray-600">{c.nr_article ?? '-'}</span> {c.article_nom ?? '-'}
                       </p>
                     </div>
@@ -523,7 +523,7 @@ export function Commandes() {
                     </div>
                     <div>
                       <span className="text-gray-500">Fournisseur</span>
-                      <p className="text-gray-800 truncate" title={c.fournisseur ?? '-'}>{c.fournisseur ?? '-'}</p>
+                      <p className="text-gray-800 cell-wrap">{c.fournisseur ?? '-'}</p>
                     </div>
                   </div>
                   {/* Bottom: controle + actions */}

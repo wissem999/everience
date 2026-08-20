@@ -452,7 +452,7 @@ export function Bookings() {
                   return (
                     <>
                       <tr key={s.article_id} className="border-b border-gray-100 hover:bg-gray-50/50">
-                        <td className="px-4 py-3">
+                        <td className="px-4 py-3 cell-wrap">
                           <span className="font-medium">{s.num_article}</span> - {s.nom}
                         </td>
                         <td className="px-4 py-3 text-right font-semibold">{s.stock_dsi}</td>
@@ -634,9 +634,9 @@ export function Bookings() {
                     </td>
                     <td className="px-4 py-3">{b.nr_facture ?? '-'}</td>
                     <td className="px-4 py-3">{b.nr_bon_commande ?? '-'}</td>
-                    <td className="px-4 py-3 max-w-[150px] truncate" title={b.fournisseur}>{b.fournisseur ?? '-'}</td>
-                    <td className="px-4 py-3 max-w-[150px] truncate" title={b.client}>{b.client ?? '-'}</td>
-                    <td className="px-4 py-3 max-w-[200px] truncate" title={`${b.nr_article ?? ''} ${b.article_nom ? `- ${b.article_nom}` : ''}`}>{b.nr_article ?? '-'}{b.article_nom ? ` - ${b.article_nom}` : ''}</td>
+                    <td className="px-4 py-3 cell-wrap">{b.fournisseur ?? '-'}</td>
+                    <td className="px-4 py-3 cell-wrap">{b.client ?? '-'}</td>
+                    <td className="px-4 py-3 cell-wrap">{b.nr_article ?? '-'}{b.article_nom ? ` - ${b.article_nom}` : ''}</td>
                     <td className="px-4 py-3 font-medium">{b.nombre}</td>
                     <td className="px-4 py-3 whitespace-nowrap">{b.date.slice(0, 16).replace('T', ' ')}</td>
                     <td className="px-4 py-3 whitespace-nowrap">
@@ -696,7 +696,7 @@ export function Bookings() {
                   <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
                     <div className="min-w-0">
                       <span className="text-xs text-gray-400">Article</span>
-                      <p className="truncate font-medium">{b.nr_article ?? '-'}{b.article_nom ? ` - ${b.article_nom}` : ''}</p>
+                      <p className="cell-wrap font-medium">{b.nr_article ?? '-'}{b.article_nom ? ` - ${b.article_nom}` : ''}</p>
                     </div>
                     <div>
                       <span className="text-xs text-gray-400">Nombre</span>
@@ -705,25 +705,25 @@ export function Bookings() {
                     {b.fournisseur && (
                       <div className="min-w-0">
                         <span className="text-xs text-gray-400">Fournisseur</span>
-                        <p className="truncate">{b.fournisseur}</p>
+                        <p className="cell-wrap">{b.fournisseur}</p>
                       </div>
                     )}
                     {b.client && (
                       <div className="min-w-0">
                         <span className="text-xs text-gray-400">Client</span>
-                        <p className="truncate">{b.client}</p>
+                        <p className="cell-wrap">{b.client}</p>
                       </div>
                     )}
                     {b.nr_facture && (
                       <div>
                         <span className="text-xs text-gray-400">Facture</span>
-                        <p className="truncate">{b.nr_facture}</p>
+                        <p className="cell-wrap">{b.nr_facture}</p>
                       </div>
                     )}
                     {b.nr_bon_commande && (
                       <div>
                         <span className="text-xs text-gray-400">Bon cmd</span>
-                        <p className="truncate">{b.nr_bon_commande}</p>
+                        <p className="cell-wrap">{b.nr_bon_commande}</p>
                       </div>
                     )}
                   </div>

@@ -189,11 +189,11 @@ export function Clients() {
               <tbody className="divide-y divide-gray-100">
                 {rows.map((c) => (
                   <tr key={c.id} className="transition-colors hover:bg-gray-50">
-                    <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 max-w-[150px] truncate" title={c.nom}>{c.nom}</td>
-                    <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600 max-w-[150px] truncate" title={c.ville ?? undefined}>{c.ville ?? '\u2014'}</td>
-                    <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600 max-w-[150px] truncate" title={c.pays ?? undefined}>{c.pays ?? '\u2014'}</td>
-                    <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600 max-w-[150px] truncate" title={c.telephone ?? undefined}>{c.telephone ?? '\u2014'}</td>
-                    <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600 max-w-[150px] truncate" title={c.mail ?? undefined}>{c.mail ?? '\u2014'}</td>
+                    <td className="cell-wrap px-6 py-4 text-sm font-medium text-gray-900">{c.nom}</td>
+                    <td className="cell-wrap px-6 py-4 text-sm text-gray-600">{c.ville ?? '\u2014'}</td>
+                    <td className="cell-wrap px-6 py-4 text-sm text-gray-600">{c.pays ?? '\u2014'}</td>
+                    <td className="cell-wrap px-6 py-4 text-sm text-gray-600">{c.telephone ?? '\u2014'}</td>
+                    <td className="cell-wrap px-6 py-4 text-sm text-gray-600">{c.mail ?? '\u2014'}</td>
                     <td className="whitespace-nowrap px-6 py-4 text-right">
                       <button
                         type="button"
@@ -223,25 +223,25 @@ export function Clients() {
             {rows.map((c) => (
               <div key={c.id} className="p-4 space-y-3">
                 <div className="flex items-start justify-between gap-2">
-                  <p className="text-sm font-semibold text-gray-900 min-w-0 truncate">{c.nom}</p>
+                  <p className="text-sm font-semibold text-gray-900 min-w-0 cell-wrap">{c.nom}</p>
                 </div>
                 <div className="space-y-1.5 text-sm">
                   {(c.ville || c.pays) && (
                     <div className="flex gap-1.5">
                       <span className="text-gray-400 shrink-0">Lieu :</span>
-                      <span className="text-gray-600 min-w-0 truncate">{[c.ville, c.pays].filter(Boolean).join(', ')}</span>
+                      <span className="text-gray-600 min-w-0 cell-wrap">{[c.ville, c.pays].filter(Boolean).join(', ')}</span>
                     </div>
                   )}
                   {c.telephone && (
                     <div className="flex gap-1.5">
                       <span className="text-gray-400 shrink-0">Tel :</span>
-                      <span className="text-gray-600 min-w-0 truncate">{c.telephone}</span>
+                      <span className="text-gray-600 min-w-0 cell-wrap">{c.telephone}</span>
                     </div>
                   )}
                   {c.mail && (
                     <div className="flex gap-1.5">
                       <span className="text-gray-400 shrink-0">Email :</span>
-                      <span className="text-gray-600 min-w-0 truncate">{c.mail}</span>
+                      <span className="text-gray-600 min-w-0 cell-wrap">{c.mail}</span>
                     </div>
                   )}
                 </div>

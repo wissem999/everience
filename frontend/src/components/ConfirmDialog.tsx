@@ -21,10 +21,10 @@ export function ConfirmDialog({
   if (!root) return null;
 
   const modal = (
-    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
       <div
-        className="animate-scale-in"
-        style={{ width: '100%', maxWidth: '24rem', borderRadius: '1rem', backgroundColor: '#fff', padding: '1.5rem', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)' }}
+        className="animate-scale-in w-full"
+        style={{ maxWidth: '24rem', borderRadius: '1rem', backgroundColor: '#fff', padding: 'clamp(1rem, 3vw, 1.5rem)', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)' }}
       >
         <div style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '3rem', height: '3rem', borderRadius: '9999px', backgroundColor: danger ? '#fef2f2' : '#eff6ff' }}>
           {danger ? (

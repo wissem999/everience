@@ -146,15 +146,15 @@ export function Fournisseurs() {
   return (
     <div className="animate-fade-in-up space-y-6">
       {/* Page Header */}
-      <div className="flex items-center justify-between">
-        <div>
+      <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
+        <div className="min-w-0">
           <h1 className="text-2xl font-bold text-gray-900">Fournisseurs</h1>
           <p className="mt-1 text-sm text-gray-500">Gestion des fournisseurs</p>
         </div>
         <button
           type="button"
           onClick={openCreate}
-          className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-200 transition-all hover:shadow-xl hover:shadow-blue-300"
+          className="flex shrink-0 items-center gap-2 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-200 transition-all hover:shadow-xl hover:shadow-blue-300"
         >
           <Plus className="h-4 w-4" />
           Nouveau fournisseur
@@ -200,7 +200,7 @@ export function Fournisseurs() {
 
       {/* Error */}
       {error && (
-        <div className="animate-fade-in rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+        <div className="animate-fade-in break-words rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
           {error}
         </div>
       )}
@@ -213,59 +213,107 @@ export function Fournisseurs() {
         </div>
       ) : (
         <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm animate-fade-in delay-100">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr className="text-left text-xs uppercase text-gray-500">
-                <th className="px-6 py-4 font-medium">Nom</th>
-                <th className="px-6 py-4 font-medium">Ville</th>
-                <th className="px-6 py-4 font-medium">Pays</th>
-                <th className="px-6 py-4 font-medium">Téléphone</th>
-                <th className="px-6 py-4 font-medium">Email</th>
-                <th className="px-6 py-4 font-medium">Groupe</th>
-                <th className="px-6 py-4 text-right font-medium">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {rows.map((f) => (
-                <tr key={f.id} className="transition-colors hover:bg-gray-50">
-                  <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">{f.nom}</td>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600">{f.ville ?? '—'}</td>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600">{f.pays ?? '—'}</td>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600">{f.telephone ?? '—'}</td>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600">{f.mail ?? '—'}</td>
-                  <td className="whitespace-nowrap px-6 py-4">
-                    {f.groupe === 'privilegie' ? (
-                      <span className="inline-flex items-center rounded-full bg-amber-50 px-3 py-1 text-xs font-medium text-amber-700">
-                        Privilégié
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-500">
-                        Non privilégié
-                      </span>
-                    )}
-                  </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-right">
-                    <button
-                      type="button"
-                      onClick={() => openEdit(f)}
-                      className="mr-2 inline-flex items-center gap-1 rounded-lg bg-blue-50 px-3 py-1.5 text-xs font-medium text-blue-600 transition-colors hover:bg-blue-100"
-                    >
-                      <Pencil className="h-3 w-3" />
-                      Modifier
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleDelete(f)}
-                      className="inline-flex items-center gap-1 rounded-lg bg-red-50 px-3 py-1.5 text-xs font-medium text-red-600 transition-colors hover:bg-red-100"
-                    >
-                      <Trash2 className="h-3 w-3" />
-                      Supprimer
-                    </button>
-                  </td>
+          {/* Desktop Table */}
+          <div className="hidden overflow-x-auto md:block">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr className="text-left text-xs uppercase text-gray-500">
+                  <th className="px-6 py-4 font-medium">Nom</th>
+                  <th className="px-6 py-4 font-medium">Ville</th>
+                  <th className="px-6 py-4 font-medium">Pays</th>
+                  <th className="px-6 py-4 font-medium">Téléphone</th>
+                  <th className="px-6 py-4 font-medium">Email</th>
+                  <th className="px-6 py-4 font-medium">Groupe</th>
+                  <th className="px-6 py-4 text-right font-medium">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {rows.map((f) => (
+                  <tr key={f.id} className="transition-colors hover:bg-gray-50">
+                    <td className="max-w-[150px] truncate px-6 py-4 text-sm font-medium text-gray-900" title={f.nom}>{f.nom}</td>
+                    <td className="max-w-[150px] truncate px-6 py-4 text-sm text-gray-600" title={f.ville ?? '—'}>{f.ville ?? '—'}</td>
+                    <td className="max-w-[150px] truncate px-6 py-4 text-sm text-gray-600" title={f.pays ?? '—'}>{f.pays ?? '—'}</td>
+                    <td className="max-w-[150px] truncate px-6 py-4 text-sm text-gray-600" title={f.telephone ?? '—'}>{f.telephone ?? '—'}</td>
+                    <td className="max-w-[150px] truncate px-6 py-4 text-sm text-gray-600" title={f.mail ?? '—'}>{f.mail ?? '—'}</td>
+                    <td className="whitespace-nowrap px-6 py-4">
+                      {f.groupe === 'privilegie' ? (
+                        <span className="inline-flex items-center rounded-full bg-amber-50 px-3 py-1 text-xs font-medium text-amber-700">
+                          Privilégié
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-500">
+                          Non privilégié
+                        </span>
+                      )}
+                    </td>
+                    <td className="whitespace-nowrap px-6 py-4 text-right">
+                      <button
+                        type="button"
+                        onClick={() => openEdit(f)}
+                        className="mr-2 inline-flex items-center gap-1 rounded-lg bg-blue-50 px-3 py-1.5 text-xs font-medium text-blue-600 transition-colors hover:bg-blue-100"
+                      >
+                        <Pencil className="h-3 w-3" />
+                        Modifier
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(f)}
+                        className="inline-flex items-center gap-1 rounded-lg bg-red-50 px-3 py-1.5 text-xs font-medium text-red-600 transition-colors hover:bg-red-100"
+                      >
+                        <Trash2 className="h-3 w-3" />
+                        Supprimer
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Cards */}
+          <div className="md:hidden">
+            {rows.map((f) => (
+              <div key={f.id} className="border-b border-gray-100 p-4 last:border-b-0">
+                <div className="mb-2 flex items-start justify-between gap-2">
+                  <h3 className="text-sm font-semibold text-gray-900" title={f.nom}>{f.nom}</h3>
+                  {f.groupe === 'privilegie' ? (
+                    <span className="inline-flex shrink-0 items-center rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-700">
+                      Privilégié
+                    </span>
+                  ) : (
+                    <span className="inline-flex shrink-0 items-center rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-500">
+                      Non privilégié
+                    </span>
+                  )}
+                </div>
+                <div className="mb-3 space-y-1 text-xs text-gray-500">
+                  {(f.ville || f.pays) && (
+                    <p>{[f.ville, f.pays].filter(Boolean).join(', ')}</p>
+                  )}
+                  {f.telephone && <p>{f.telephone}</p>}
+                  {f.mail && <p className="truncate" title={f.mail}>{f.mail}</p>}
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => openEdit(f)}
+                    className="inline-flex items-center gap-1 rounded-lg bg-blue-50 px-3 py-1.5 text-xs font-medium text-blue-600 transition-colors hover:bg-blue-100"
+                  >
+                    <Pencil className="h-3 w-3" />
+                    Modifier
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleDelete(f)}
+                    className="inline-flex items-center gap-1 rounded-lg bg-red-50 px-3 py-1.5 text-xs font-medium text-red-600 transition-colors hover:bg-red-100"
+                  >
+                    <Trash2 className="h-3 w-3" />
+                    Supprimer
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
 
           {/* Empty State */}
           {rows.length === 0 && (
@@ -299,7 +347,7 @@ export function Fournisseurs() {
               value={form.adresse}
               onChange={(e) => set('adresse')(e.target.value)}
             />
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <TextInput
                 label="Ville"
                 value={form.ville}
@@ -311,7 +359,7 @@ export function Fournisseurs() {
                 onChange={(e) => set('pays')(e.target.value)}
               />
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <TextInput
                 label="Téléphone"
                 value={form.telephone}
@@ -334,10 +382,10 @@ export function Fournisseurs() {
             </Select>
 
             {modalError && (
-              <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">{modalError}</div>
+              <div className="break-words rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">{modalError}</div>
             )}
 
-            <div className="flex justify-end gap-3 border-t border-gray-100 pt-4">
+            <div className="flex flex-col-reverse justify-end gap-3 border-t border-gray-100 pt-4 sm:flex-row">
               <button
                 type="button"
                 onClick={() => setModalOpen(false)}

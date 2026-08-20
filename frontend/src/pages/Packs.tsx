@@ -16,8 +16,6 @@ const emptyForm: PackForm = { nom: '', description: '', items: [{ article_id: ''
 
 const inputClass =
   'w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm transition-colors focus:border-violet-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-violet-500/20';
-const errorInputClass =
-  'w-full rounded-xl border border-red-300 bg-red-50 px-4 py-2.5 text-sm focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500/20';
 
 export function Packs() {
   const [packs, setPacks] = useState<Pack[]>([]);
@@ -138,22 +136,22 @@ export function Packs() {
   return (
     <div className="space-y-6 animate-fade-in-up">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="min-w-0">
           <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-500/25">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-500/25 shrink-0">
               <Package className="h-5 w-5" />
             </div>
             Packs
           </h1>
-          <p className="mt-1 ml-13 text-sm text-gray-500">
+          <p className="mt-1 ml-0 sm:ml-13 text-sm text-gray-500">
             Gérer les packs d'articles
           </p>
         </div>
         <button
           type="button"
           onClick={openCreate}
-          className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-2.5 text-sm font-medium text-white shadow-lg shadow-blue-500/25 transition-all hover:shadow-xl hover:shadow-blue-500/30 hover:brightness-110 active:scale-[0.98]"
+          className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-2.5 text-sm font-medium text-white shadow-lg shadow-blue-500/25 transition-all hover:shadow-xl hover:shadow-blue-500/30 hover:brightness-110 active:scale-[0.98] shrink-0"
         >
           <Plus className="h-4 w-4" />
           Nouveau pack
@@ -173,94 +171,168 @@ export function Packs() {
         </div>
       </div>
 
-      {/* Table */}
-      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm animate-fade-in-up delay-100">
-        <table className="min-w-full divide-y divide-gray-200 text-sm">
-          <thead className="bg-gray-50/80">
-            <tr className="text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-              <th className="px-6 py-3.5">Nom</th>
-              <th className="px-6 py-3.5">Description</th>
-              <th className="px-6 py-3.5">Articles</th>
-              <th className="px-6 py-3.5 text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-100">
-            {loading ? (
-              <tr>
-                <td colSpan={4} className="px-6 py-12 text-center">
-                  <div className="flex items-center justify-center gap-3">
-                    <div className="h-5 w-5 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
-                    <span className="text-sm text-gray-500">Chargement...</span>
-                  </div>
-                </td>
+      {/* Table — Desktop */}
+      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm animate-fade-in-up delay-100 hidden md:block">
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200 text-sm">
+            <thead className="bg-gray-50/80">
+              <tr className="text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                <th className="px-6 py-3.5">Nom</th>
+                <th className="px-6 py-3.5">Description</th>
+                <th className="px-6 py-3.5">Articles</th>
+                <th className="px-6 py-3.5 text-right">Actions</th>
               </tr>
-            ) : packs.length === 0 ? (
-              <tr>
-                <td colSpan={4} className="px-6 py-16 text-center">
-                  <div className="flex flex-col items-center gap-3">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-100">
-                      <Inbox className="h-7 w-7 text-gray-300" />
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {loading ? (
+                <tr>
+                  <td colSpan={4} className="px-6 py-12 text-center">
+                    <div className="flex items-center justify-center gap-3">
+                      <div className="h-5 w-5 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
+                      <span className="text-sm text-gray-500">Chargement...</span>
                     </div>
-                    <div>
-                      <p className="text-sm font-medium text-gray-900">Aucun pack</p>
-                      <p className="mt-1 text-xs text-gray-500">
-                        Créez un pack pour regrouper des articles
-                      </p>
+                  </td>
+                </tr>
+              ) : packs.length === 0 ? (
+                <tr>
+                  <td colSpan={4} className="px-6 py-16 text-center">
+                    <div className="flex flex-col items-center gap-3">
+                      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-100">
+                        <Inbox className="h-7 w-7 text-gray-300" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-gray-900">Aucun pack</p>
+                        <p className="mt-1 text-xs text-gray-500">
+                          Créez un pack pour regrouper des articles
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </td>
-              </tr>
-            ) : packs.map((p, i) => (
-              <tr
-                key={p.id}
-                className="animate-fade-in-up transition-colors hover:bg-gray-50/50"
-                style={{ animationDelay: `${(i + 2) * 50}ms` }}
-              >
-                <td className="px-6 py-4">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50">
-                      <Package className="h-4 w-4 text-blue-600" />
+                  </td>
+                </tr>
+              ) : packs.map((p, i) => (
+                <tr
+                  key={p.id}
+                  className="animate-fade-in-up transition-colors hover:bg-gray-50/50"
+                  style={{ animationDelay: `${(i + 2) * 50}ms` }}
+                >
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50">
+                        <Package className="h-4 w-4 text-blue-600" />
+                      </div>
+                      <span className="font-medium text-gray-900">{p.nom}</span>
                     </div>
-                    <span className="font-medium text-gray-900">{p.nom}</span>
-                  </div>
-                </td>
-                <td className="px-6 py-4 text-gray-500">{p.description ?? '—'}</td>
-                <td className="px-6 py-4">
-                  <div className="flex flex-wrap gap-1.5">
-                    {p.items.map((item) => (
-                      <span
-                        key={item.id}
-                        className="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700"
+                  </td>
+                  <td className="px-6 py-4 text-gray-500">{p.description ?? '—'}</td>
+                  <td className="px-6 py-4">
+                    <div className="flex flex-wrap gap-1.5">
+                      {p.items.map((item) => (
+                        <span
+                          key={item.id}
+                          className="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700"
+                        >
+                          {item.quantite}x {item.num_article}
+                        </span>
+                      ))}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex items-center justify-end gap-1">
+                      <button
+                        type="button"
+                        onClick={() => openEdit(p)}
+                        className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-blue-600"
+                        title="Modifier"
                       >
-                        {item.quantite}x {item.num_article}
-                      </span>
-                    ))}
-                  </div>
-                </td>
-                <td className="px-6 py-4">
-                  <div className="flex items-center justify-end gap-1">
-                    <button
-                      type="button"
-                      onClick={() => openEdit(p)}
-                      className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-blue-600"
-                      title="Modifier"
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setDeleteTarget(p)}
-                      className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600"
-                      title="Supprimer"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                        <Pencil className="h-4 w-4" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setDeleteTarget(p)}
+                        className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600"
+                        title="Supprimer"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Table — Mobile cards */}
+      <div className="md:hidden space-y-3 animate-fade-in-up delay-100">
+        {loading ? (
+          <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+            <div className="flex items-center justify-center gap-3">
+              <div className="h-5 w-5 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
+              <span className="text-sm text-gray-500">Chargement...</span>
+            </div>
+          </div>
+        ) : packs.length === 0 ? (
+          <div className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm">
+            <div className="flex flex-col items-center gap-3">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-100">
+                <Inbox className="h-7 w-7 text-gray-300" />
+              </div>
+              <div className="text-center">
+                <p className="text-sm font-medium text-gray-900">Aucun pack</p>
+                <p className="mt-1 text-xs text-gray-500">
+                  Créez un pack pour regrouper des articles
+                </p>
+              </div>
+            </div>
+          </div>
+        ) : packs.map((p, i) => (
+          <div
+            key={p.id}
+            className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm animate-fade-in-up"
+            style={{ animationDelay: `${(i + 2) * 50}ms` }}
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-50">
+                  <Package className="h-4 w-4 text-blue-600" />
+                </div>
+                <span className="font-medium text-gray-900 truncate">{p.nom}</span>
+              </div>
+              <div className="flex items-center gap-1 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => openEdit(p)}
+                  className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-blue-600"
+                  title="Modifier"
+                >
+                  <Pencil className="h-4 w-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setDeleteTarget(p)}
+                  className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600"
+                  title="Supprimer"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+            {p.description && (
+              <p className="mt-2 ml-11 text-sm text-gray-500 line-clamp-2 break-words">{p.description}</p>
+            )}
+            <div className="mt-3 ml-11 flex flex-wrap gap-1.5">
+              {p.items.map((item) => (
+                <span
+                  key={item.id}
+                  className="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700"
+                >
+                  {item.quantite}x {item.num_article}
+                </span>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
 
       {/* Create / Edit Modal */}
@@ -300,10 +372,10 @@ export function Packs() {
                   {form.items.map((item, idx) => (
                     <div
                       key={idx}
-                      className="flex items-center gap-2 rounded-xl border border-gray-200 bg-gray-50/50 p-3 transition-colors hover:border-gray-300"
+                      className="flex flex-wrap items-center gap-2 rounded-xl border border-gray-200 bg-gray-50/50 p-3 transition-colors hover:border-gray-300"
                     >
                       <select
-                        className="flex-1 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                        className="min-w-0 flex-1 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
                         value={item.article_id}
                         onChange={(e) => updateItem(idx, 'article_id', e.target.value)}
                       >
@@ -317,7 +389,7 @@ export function Packs() {
                       <input
                         type="number"
                         min={1}
-                        className="w-20 rounded-lg border border-gray-200 bg-white px-3 py-2 text-center text-sm focus:border-blue-500 focus:outline-none"
+                        className="w-20 shrink-0 rounded-lg border border-gray-200 bg-white px-3 py-2 text-center text-sm focus:border-blue-500 focus:outline-none"
                         value={item.quantite}
                         onChange={(e) => updateItem(idx, 'quantite', e.target.value)}
                       />
@@ -348,13 +420,13 @@ export function Packs() {
 
               {/* Error */}
               {formError && (
-                <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+                <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 break-words">
                   {formError}
                 </div>
               )}
 
               {/* Actions */}
-              <div className="flex justify-end gap-3 pt-2">
+              <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-2">
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}

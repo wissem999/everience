@@ -15,7 +15,12 @@
 
 * { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
 
-body { @apply bg-gray-50 text-gray-900; font-feature-settings: "cv02", "cv03", "cv04", "cv11"; }
+html { overflow-x: hidden; }
+
+body { @apply bg-gray-50 text-gray-900; font-feature-settings: "cv02", "cv03", "cv04", "cv11"; overflow-x: hidden; }
+
+/* Prevent horizontal overflow globally */
+#root { overflow-x: hidden; min-height: 100dvh; }
 
 /* Animations */
 @keyframes fade-in-up {
@@ -107,3 +112,22 @@ body { @apply bg-gray-50 text-gray-900; font-feature-settings: "cv02", "cv03", "
 /* Truncate long text */
 .truncate-cell { @apply max-w-[200px] truncate; }
 @media (min-width: 1280px) { .truncate-cell { @apply max-w-[300px]; } }
+
+/* Long text handling */
+.text-balance { overflow-wrap: break-word; word-break: break-word; min-width: 0; }
+
+/* Mobile card view for tables */
+@media (max-width: 767px) {
+  .mobile-card-table thead { display: none; }
+  .mobile-card-table tbody tr { display: flex; flex-direction: column; padding: 1rem; border-bottom: 1px solid #f3f4f6; gap: 0.5rem; }
+  .mobile-card-table tbody td { display: flex; justify-content: space-between; align-items: center; padding: 0.25rem 0; border: none; text-align: right; }
+  .mobile-card-table tbody td::before { content: attr(data-label); text-align: left; font-weight: 500; color: #6b7280; font-size: 0.75rem; text-transform: uppercase; }
+}
+
+/* Mobile compact stat cards */
+@media (max-width: 640px) {
+  .stat-grid-compact { grid-template-columns: repeat(2, 1fr) !important; }
+}
+@media (max-width: 380px) {
+  .stat-grid-compact { grid-template-columns: 1fr !important; }
+}

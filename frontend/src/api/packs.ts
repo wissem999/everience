@@ -1,5 +1,11 @@
 import api from './axios';
-import type { Pack } from '../types';
+import type { Pack, PackItem } from '../types';
+
+interface PackPayload {
+  nom: string;
+  description?: string;
+  items: Omit<PackItem, 'id' | 'pack_id'>[];
+}
 
 export async function getPacks() {
   const { data } = await api.get<Pack[]>('/packs');
@@ -11,12 +17,12 @@ export async function getPack(id: number) {
   return data;
 }
 
-export async function createPack(pack: Omit<Pack, 'id'>) {
+export async function createPack(pack: PackPayload) {
   const { data } = await api.post<Pack>('/packs', pack);
   return data;
 }
 
-export async function updatePack(id: number, pack: Omit<Pack, 'id'>) {
+export async function updatePack(id: number, pack: PackPayload) {
   const { data } = await api.put<Pack>(`/packs/${id}`, pack);
   return data;
 }

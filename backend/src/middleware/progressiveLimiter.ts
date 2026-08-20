@@ -6,11 +6,12 @@ interface Attempt {
 }
 
 const attempts = new Map<string, Attempt>();
+const FREE_ATTEMPTS = 3;
 const BASE_DELAY = 10;
 const MAX_DELAY = 1800;
 
-function getDelay(count: number): number {
-  return Math.min(BASE_DELAY * Math.pow(2, count - 1), MAX_DELAY);
+function getDelay(attemptNumber: number): number {
+  return Math.min(BASE_DELAY * Math.pow(2, attemptNumber - 1), MAX_DELAY);
 }
 
 export function progressiveLimiter(req: Request, res: Response, next: NextFunction) {
@@ -37,7 +38,13 @@ export function recordFailedLogin(req: Request) {
   const now = Date.now();
   const entry = attempts.get(ip);
   const count = (entry?.count ?? 0) + 1;
-  const delay = getDelay(count);
+
+  if (count <= FREE_ATTEMPTS) {
+    attempts.set(ip, { count, blockedUntil: 0 });
+    return;
+  }
+
+  const delay = getDelay(count - FREE_ATTEMPTS);
   attempts.set(ip, { count, blockedUntil: now + delay * 1000 });
 }
 
@@ -49,6 +56,6 @@ export function recordSuccessfulLogin(req: Request) {
 setInterval(() => {
   const now = Date.now();
   for (const [ip, entry] of attempts) {
-    if (entry.blockedUntil <= now) attempts.delete(ip);
+    if (entry.blockedUntil > 0 && entry.blockedUntil <= now) attempts.delete(ip);
   }
 }, 60_000);

@@ -158,7 +158,6 @@ export function Articles() {
   const stockMin = Number(form.stock_min) || 0;
   const previewStatus = stock <= stockMin ? 'Besoin Actif' : 'Actif';
 
-  // stats
   const totalArticles = products.length;
   const totalValeurStock = products.reduce((sum, p) => sum + (Number(p.valeur_stock) || 0), 0);
   const totalBesoinActif = products.filter((p) => p.status === 'Besoin Actif' || p.stock <= p.stock_min).length;
@@ -167,14 +166,14 @@ export function Articles() {
     <div className="animate-fade-in-up">
       {/* header */}
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div>
+        <div className="min-w-0">
           <h1 className="text-2xl font-bold text-gray-900">Articles</h1>
           <p className="text-sm text-gray-500">Gestion des articles en stock</p>
         </div>
         <button
           type="button"
           onClick={openCreate}
-          className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-600/25 hover:bg-blue-700 hover:shadow-blue-600/40 active:scale-[0.98] transition-all duration-200"
+          className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-600/25 hover:bg-blue-700 hover:shadow-blue-600/40 active:scale-[0.98] transition-all duration-200 shrink-0"
         >
           <Plus className="w-4 h-4" />
           Nouvel article
@@ -184,41 +183,41 @@ export function Articles() {
       {error && (
         <div className="mb-4 flex items-center gap-2.5 rounded-xl bg-red-50 border border-red-100 px-4 py-3">
           <AlertTriangle className="w-5 h-5 text-red-500 shrink-0" />
-          <p className="text-sm text-red-600">{error}</p>
+          <p className="text-sm text-red-600 min-w-0 break-words">{error}</p>
         </div>
       )}
 
       {/* stats row */}
       {!loading && (
         <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3 animate-fade-in-up delay-75">
-          <div className="rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 p-5 shadow-lg shadow-blue-600/20">
+          <div className="rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 p-4 sm:p-5 shadow-lg shadow-blue-600/20">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm shrink-0">
                 <Package className="h-5 w-5 text-white" />
               </div>
-              <div>
+              <div className="min-w-0">
                 <p className="text-sm font-medium text-blue-100">Total articles</p>
                 <p className="text-2xl font-bold text-white">{totalArticles}</p>
               </div>
             </div>
           </div>
-          <div className="rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 p-5 shadow-lg shadow-emerald-600/20">
+          <div className="rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 p-4 sm:p-5 shadow-lg shadow-emerald-600/20">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm shrink-0">
                 <TrendingUp className="h-5 w-5 text-white" />
               </div>
-              <div>
+              <div className="min-w-0">
                 <p className="text-sm font-medium text-emerald-100">Valeur stock</p>
-                <p className="text-2xl font-bold text-white">{totalValeurStock.toFixed(2)} TND</p>
+                <p className="text-xl sm:text-2xl font-bold text-white truncate">{totalValeurStock.toFixed(2)} TND</p>
               </div>
             </div>
           </div>
-          <div className="rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 p-5 shadow-lg shadow-orange-600/20">
+          <div className="rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 p-4 sm:p-5 shadow-lg shadow-orange-600/20">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm shrink-0">
                 <AlertTriangle className="h-5 w-5 text-white" />
               </div>
-              <div>
+              <div className="min-w-0">
                 <p className="text-sm font-medium text-orange-100">Besoin actif</p>
                 <p className="text-2xl font-bold text-white">{totalBesoinActif}</p>
               </div>
@@ -235,39 +234,102 @@ export function Articles() {
           </div>
         </div>
       ) : (
-        <div className="table-wrap rounded-2xl border border-gray-200 bg-white shadow-sm">
-          <table className="min-w-full divide-y divide-gray-200 text-sm">
-            <thead className="bg-gray-50/80 backdrop-blur-sm">
-              <tr className="text-left text-xs font-medium text-gray-500 uppercase">
-                <th className="px-5 py-3.5">N° Article</th>
-                <th className="px-5 py-3.5">Nom</th>
-                <th className="px-5 py-3.5">Description</th>
-                <th className="px-5 py-3.5">Prix</th>
-                <th className="px-5 py-3.5">Stock</th>
-                <th className="px-5 py-3.5">Stock min</th>
-                <th className="px-5 py-3.5">Valeur stock</th>
-                <th className="px-5 py-3.5">Statut</th>
-                <th className="px-5 py-3.5 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {products.map((p, i) => (
-                <tr key={p.id} className={cn('hover:bg-gray-50/80 transition-colors', i % 2 === 0 ? 'bg-white' : 'bg-gray-50/30')}>
-                  <td className="px-5 py-3.5 font-mono text-gray-600">{p.num_article}</td>
-                  <td className="px-5 py-3.5 font-medium text-gray-800">{p.nom}</td>
-                  <td className="px-5 py-3.5 text-gray-500">{p.description || '—'}</td>
-                  <td className="px-5 py-3.5">{Number(p.prix).toFixed(2)} TND</td>
-                  <td className="px-5 py-3.5">{p.stock}</td>
-                  <td className="px-5 py-3.5">{p.stock_min}</td>
-                  <td className="px-5 py-3.5">{Number(p.valeur_stock).toFixed(2)} TND</td>
-                  <td className="px-5 py-3.5">
+        <div className="rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden">
+          {/* Desktop table */}
+          <div className="hidden md:block table-wrap">
+            <table className="min-w-full divide-y divide-gray-200 text-sm">
+              <thead className="bg-gray-50/80 backdrop-blur-sm">
+                <tr className="text-left text-xs font-medium text-gray-500 uppercase">
+                  <th className="px-5 py-3.5">N Article</th>
+                  <th className="px-5 py-3.5">Nom</th>
+                  <th className="px-5 py-3.5">Description</th>
+                  <th className="px-5 py-3.5">Prix</th>
+                  <th className="px-5 py-3.5">Stock</th>
+                  <th className="px-5 py-3.5">Stock min</th>
+                  <th className="px-5 py-3.5">Valeur stock</th>
+                  <th className="px-5 py-3.5">Statut</th>
+                  <th className="px-5 py-3.5 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {products.map((p, i) => (
+                  <tr key={p.id} className={cn('hover:bg-gray-50/80 transition-colors', i % 2 === 0 ? 'bg-white' : 'bg-gray-50/30')}>
+                    <td className="px-5 py-3.5 font-mono text-gray-600">{p.num_article}</td>
+                    <td className="px-5 py-3.5 font-medium text-gray-800 max-w-[200px] truncate" title={p.nom}>{p.nom}</td>
+                    <td className="px-5 py-3.5 text-gray-500 max-w-[200px] truncate" title={p.description || ''}>{p.description || '—'}</td>
+                    <td className="px-5 py-3.5">{Number(p.prix).toFixed(2)} TND</td>
+                    <td className="px-5 py-3.5">{p.stock}</td>
+                    <td className="px-5 py-3.5">{p.stock_min}</td>
+                    <td className="px-5 py-3.5">{Number(p.valeur_stock).toFixed(2)} TND</td>
+                    <td className="px-5 py-3.5">
+                      <StatusBadge status={p.status} />
+                    </td>
+                    <td className="px-5 py-3.5 text-right whitespace-nowrap">
+                      <button
+                        type="button"
+                        onClick={() => openEdit(p)}
+                        className="mr-1.5 inline-flex items-center gap-1 rounded-lg bg-blue-50 px-2.5 py-1.5 text-xs font-medium text-blue-600 hover:bg-blue-100 transition-colors"
+                      >
+                        <Pencil className="h-3.5 w-3.5" />
+                        Modifier
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(p)}
+                        className="inline-flex items-center gap-1 rounded-lg bg-red-50 px-2.5 py-1.5 text-xs font-medium text-red-600 hover:bg-red-100 transition-colors"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                        Supprimer
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile card view */}
+          <div className="md:hidden divide-y divide-gray-100">
+            {products.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-16 animate-fade-in">
+                <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-100">
+                  <PackageOpen className="h-8 w-8 text-gray-400" />
+                </div>
+                <p className="text-base font-medium text-gray-500">Aucun article pour le moment</p>
+                <p className="mt-1 text-sm text-gray-400">Commencez par ajouter votre premier article</p>
+              </div>
+            ) : (
+              products.map((p) => (
+                <div key={p.id} className="p-4 space-y-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <p className="font-medium text-gray-900 truncate" title={p.nom}>{p.nom}</p>
+                      <p className="text-xs text-gray-500 font-mono">{p.num_article}</p>
+                    </div>
                     <StatusBadge status={p.status} />
-                  </td>
-                  <td className="px-5 py-3.5 text-right">
+                  </div>
+                  {p.description && (
+                    <p className="text-sm text-gray-500 line-clamp-2">{p.description}</p>
+                  )}
+                  <div className="grid grid-cols-3 gap-3 text-sm">
+                    <div>
+                      <p className="text-xs text-gray-400">Prix</p>
+                      <p className="font-medium">{Number(p.prix).toFixed(2)} TND</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-400">Stock</p>
+                      <p className="font-medium">{p.stock}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-400">Min</p>
+                      <p className="font-medium">{p.stock_min}</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-2 pt-1">
                     <button
                       type="button"
                       onClick={() => openEdit(p)}
-                      className="mr-1.5 inline-flex items-center gap-1 rounded-lg bg-blue-50 px-2.5 py-1.5 text-xs font-medium text-blue-600 hover:bg-blue-100 transition-colors"
+                      className="flex-1 inline-flex items-center justify-center gap-1 rounded-lg bg-blue-50 px-3 py-2 text-xs font-medium text-blue-600 hover:bg-blue-100 transition-colors"
                     >
                       <Pencil className="h-3.5 w-3.5" />
                       Modifier
@@ -275,19 +337,19 @@ export function Articles() {
                     <button
                       type="button"
                       onClick={() => handleDelete(p)}
-                      className="inline-flex items-center gap-1 rounded-lg bg-red-50 px-2.5 py-1.5 text-xs font-medium text-red-600 hover:bg-red-100 transition-colors"
+                      className="flex-1 inline-flex items-center justify-center gap-1 rounded-lg bg-red-50 px-3 py-2 text-xs font-medium text-red-600 hover:bg-red-100 transition-colors"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
                       Supprimer
                     </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
 
           {products.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-16 animate-fade-in">
+            <div className="hidden md:flex flex-col items-center justify-center py-16 animate-fade-in">
               <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-100">
                 <PackageOpen className="h-8 w-8 text-gray-400" />
               </div>
@@ -304,9 +366,9 @@ export function Articles() {
           onClose={() => setModalOpen(false)}
         >
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <TextInput
-                label="Numéro article"
+                label="Numero article"
                 value={form.num_article}
                 onChange={(e) => set('num_article')(e.target.value)}
                 error={invalidFields.includes('num_article')}
@@ -326,7 +388,7 @@ export function Articles() {
               value={form.description}
               onChange={(e) => set('description')(e.target.value)}
             />
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <TextInput
                 label="Prix (TND)"
                 type="number"
@@ -363,7 +425,7 @@ export function Articles() {
                 Valeur du stock :{' '}
                 <span className="font-semibold text-blue-700">{(prix * stock).toFixed(2)} TND</span>
               </p>
-              <p className="mt-1">
+              <p className="mt-1 flex items-center gap-2">
                 Statut : <StatusBadge status={previewStatus} />
               </p>
             </div>
@@ -371,24 +433,24 @@ export function Articles() {
             {modalError && (
               <div className="flex items-center gap-2 rounded-xl bg-red-50 px-3 py-2 text-sm text-red-600">
                 <AlertTriangle className="h-4 w-4 shrink-0" />
-                {modalError}
+                <span className="min-w-0 break-words">{modalError}</span>
               </div>
             )}
 
-            <div className="flex justify-end gap-3 pt-2">
+            <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-2">
               <button
                 type="button"
                 onClick={() => setModalOpen(false)}
-                className="inline-flex items-center gap-1.5 rounded-xl border border-gray-300 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-gray-300 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
               >
                 <X className="h-4 w-4" />
                 Annuler
               </button>
               <button
                 type="submit"
-                className="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-blue-600/25 hover:bg-blue-700 hover:shadow-blue-600/40 active:scale-[0.98] transition-all duration-200"
+                className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-medium text-white shadow-lg shadow-blue-600/25 hover:bg-blue-700 hover:shadow-blue-600/40 active:scale-[0.98] transition-all duration-200"
               >
-                {editing ? 'Enregistrer' : 'Créer'}
+                {editing ? 'Enregistrer' : 'Creer'}
               </button>
             </div>
           </form>

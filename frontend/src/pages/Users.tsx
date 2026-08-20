@@ -132,22 +132,22 @@ export function Users() {
   return (
     <div className="space-y-6 animate-fade-in-up">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="min-w-0">
           <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 text-white shadow-lg shadow-violet-500/25">
               <UsersIcon className="h-5 w-5" />
             </div>
             Utilisateurs
           </h1>
-          <p className="mt-1 ml-13 text-sm text-gray-500">
+          <p className="mt-1 ml-0 sm:ml-13 text-sm text-gray-500">
             Gestion des comptes (réservé à l'administrateur)
           </p>
         </div>
         <button
           type="button"
           onClick={openCreate}
-          className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-2.5 text-sm font-medium text-white shadow-lg shadow-violet-500/25 transition-all hover:shadow-xl hover:shadow-violet-500/30 hover:brightness-110 active:scale-[0.98]"
+          className="shrink-0 flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 px-5 py-2.5 text-sm font-medium text-white shadow-lg shadow-violet-500/25 transition-all hover:shadow-xl hover:shadow-violet-500/30 hover:brightness-110 active:scale-[0.98]"
         >
           <UserPlus className="h-4 w-4" />
           Nouvel utilisateur
@@ -169,98 +169,150 @@ export function Users() {
 
       {/* Error */}
       {error && (
-        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 animate-fade-in">
+        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 break-words animate-fade-in">
           {error}
         </div>
       )}
 
-      {/* Table */}
+      {/* Table / Cards */}
       {loading ? (
         <div className="flex items-center gap-3 rounded-2xl border border-gray-200 bg-white px-6 py-12 shadow-sm animate-fade-in">
           <div className="h-5 w-5 animate-spin rounded-full border-2 border-violet-600 border-t-transparent" />
           <span className="text-sm text-gray-500">Chargement...</span>
         </div>
+      ) : rows.length === 0 ? (
+        <div className="flex flex-col items-center gap-3 rounded-2xl border border-gray-200 bg-white px-6 py-16 text-center shadow-sm animate-fade-in-up delay-100">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-100">
+            <Inbox className="h-7 w-7 text-gray-300" />
+          </div>
+          <div>
+            <p className="text-sm font-medium text-gray-900">Aucun utilisateur</p>
+            <p className="mt-1 text-xs text-gray-500">
+              Commencez par créer un compte utilisateur
+            </p>
+          </div>
+        </div>
       ) : (
         <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm animate-fade-in-up delay-100">
-          <table className="min-w-full divide-y divide-gray-200 text-sm">
-            <thead className="bg-gray-50/80">
-              <tr className="text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                <th className="px-6 py-3.5">Nom</th>
-                <th className="px-6 py-3.5">Email</th>
-                <th className="px-6 py-3.5">Rôle</th>
-                <th className="px-6 py-3.5 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {rows.map((u, i) => (
-                <tr
-                  key={u.id}
-                  className="animate-fade-in-up transition-colors hover:bg-gray-50/50"
-                  style={{ animationDelay: `${(i + 2) * 50}ms` }}
-                >
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100">
-                        <User className="h-4 w-4 text-gray-500" />
-                      </div>
-                      <span className="font-medium text-gray-900">{u.nom}</span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 text-gray-500">{u.email}</td>
-                  <td className="px-6 py-3">
-                    {u.role === 'admin' ? (
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-violet-50 px-3 py-1 text-xs font-medium text-violet-700">
-                        <Shield className="h-3 w-3" />
-                        Administrateur
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-500">
-                        <User className="h-3 w-3" />
-                        Utilisateur
-                      </span>
-                    )}
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center justify-end gap-1">
-                      <button
-                        type="button"
-                        onClick={() => openEdit(u)}
-                        className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-blue-600"
-                        title="Modifier"
-                      >
-                        <Pencil className="h-4 w-4" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleDelete(u)}
-                        className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600"
-                        title="Supprimer"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
-                    </div>
-                  </td>
+          {/* Desktop table */}
+          <div className="hidden md:block overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200 text-sm">
+              <thead className="bg-gray-50/80">
+                <tr className="text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                  <th className="px-6 py-3.5">Nom</th>
+                  <th className="px-6 py-3.5">Email</th>
+                  <th className="px-6 py-3.5">Rôle</th>
+                  <th className="px-6 py-3.5 text-right">Actions</th>
                 </tr>
-              ))}
-              {rows.length === 0 && (
-                <tr>
-                  <td colSpan={4} className="px-6 py-16 text-center">
-                    <div className="flex flex-col items-center gap-3">
-                      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-100">
-                        <Inbox className="h-7 w-7 text-gray-300" />
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {rows.map((u, i) => (
+                  <tr
+                    key={u.id}
+                    className="animate-fade-in-up transition-colors hover:bg-gray-50/50"
+                    style={{ animationDelay: `${(i + 2) * 50}ms` }}
+                  >
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100">
+                          <User className="h-4 w-4 text-gray-500" />
+                        </div>
+                        <span className="font-medium text-gray-900">{u.nom}</span>
                       </div>
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">Aucun utilisateur</p>
-                        <p className="mt-1 text-xs text-gray-500">
-                          Commencez par créer un compte utilisateur
-                        </p>
+                    </td>
+                    <td className="px-6 py-4 text-gray-500 min-w-0">
+                      <span className="truncate block">{u.email}</span>
+                    </td>
+                    <td className="px-6 py-3">
+                      {u.role === 'admin' ? (
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-violet-50 px-3 py-1 text-xs font-medium text-violet-700">
+                          <Shield className="h-3 w-3" />
+                          Administrateur
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-500">
+                          <User className="h-3 w-3" />
+                          Utilisateur
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center justify-end gap-1">
+                        <button
+                          type="button"
+                          onClick={() => openEdit(u)}
+                          className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-blue-600"
+                          title="Modifier"
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(u)}
+                          className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600"
+                          title="Supprimer"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
                       </div>
-                    </div>
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile card view */}
+          <div className="md:hidden divide-y divide-gray-100">
+            {rows.map((u, i) => (
+              <div
+                key={u.id}
+                className="px-4 py-4 space-y-3 animate-fade-in-up"
+                style={{ animationDelay: `${(i + 2) * 50}ms` }}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gray-100">
+                    <User className="h-5 w-5 text-gray-500" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="font-medium text-gray-900 truncate">{u.nom}</p>
+                    <p className="text-sm text-gray-500 truncate">{u.email}</p>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between">
+                  {u.role === 'admin' ? (
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-violet-50 px-3 py-1 text-xs font-medium text-violet-700">
+                      <Shield className="h-3 w-3" />
+                      Administrateur
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-500">
+                      <User className="h-3 w-3" />
+                      Utilisateur
+                    </span>
+                  )}
+                  <div className="flex items-center gap-1">
+                    <button
+                      type="button"
+                      onClick={() => openEdit(u)}
+                      className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-blue-600"
+                      title="Modifier"
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(u)}
+                      className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600"
+                      title="Supprimer"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
@@ -297,12 +349,12 @@ export function Users() {
             />
 
             {modalError && (
-              <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+              <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 break-words">
                 {modalError}
               </div>
             )}
 
-            <div className="flex justify-end gap-3 pt-2">
+            <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-2">
               <button
                 type="button"
                 onClick={() => setModalOpen(false)}

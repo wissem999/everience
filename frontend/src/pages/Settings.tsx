@@ -128,7 +128,7 @@ export function Settings() {
   return (
     <div className="mx-auto max-w-4xl animate-fade-in">
       {/* Page Header */}
-      <div className="mb-8">
+      <div className="mb-6 sm:mb-8">
         <h1 className="text-2xl font-bold text-gray-900">Parametres</h1>
         <p className="mt-1 text-sm text-gray-500">Configuration des emails et du serveur SMTP</p>
       </div>
@@ -196,7 +196,7 @@ export function Settings() {
           </div>
 
           {/* Add Email Input */}
-          <div className="mt-4 flex items-center gap-2">
+          <div className="mt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
             <input
               id="new-finance-email"
               type="email"
@@ -304,9 +304,9 @@ export function Settings() {
       </form>
 
       {/* Variables Helper */}
-      <section className="mb-8 rounded-xl bg-gray-50 p-5 text-xs text-gray-500 animate-fade-in-up delay-400">
+      <section className="mb-8 rounded-xl bg-gray-50 p-4 sm:p-5 text-xs text-gray-500 animate-fade-in-up delay-400">
         <p className="mb-2 font-medium text-gray-700">Variables utilisables dans les messages :</p>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-1.5 sm:gap-2">
           {['{num_article}', '{nom}', '{stock}', '{stock_min}', '{besoin}', '{link}', '{nr_commande}', '{article_nom}', '{nombre}', '{date}', '{prix_unitaire}', '{prix_total}', '{fournisseur}'].map((v) => (
             <code key={v} className="rounded-lg bg-white px-2 py-1 font-mono text-xs text-gray-600 shadow-sm border border-gray-100">
               {v}

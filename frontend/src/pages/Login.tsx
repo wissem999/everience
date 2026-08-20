@@ -123,6 +123,7 @@ export function Login() {
       const status: number = err.response?.status;
 
       if (status === 400) {
+        setCooldown(0);
         if (msg.toLowerCase().includes('email')) {
           setErrors((e) => ({ ...e, email: msg }));
           setTouched((t) => ({ ...t, email: true }));
@@ -133,10 +134,11 @@ export function Login() {
           setServerError(msg || 'Donnees invalides');
         }
       } else if (status === 401) {
+        setCooldown(0);
         setServerError('Email ou mot de passe incorrect');
       } else if (status === 429) {
         const resetHeader = err.response?.headers?.['ratelimit-reset'] ?? err.response?.headers?.['x-ratelimit-reset'] ?? err.response?.headers?.['retry-after'];
-        let waitSecs = 15 * 60;
+        let waitSecs = 10;
         if (resetHeader) {
           const resetTs = Number(resetHeader);
           if (resetTs > 0) {
@@ -147,8 +149,10 @@ export function Login() {
         setCooldown(waitSecs);
         setServerError(`Trop de tentatives. Reessayez dans ${formatCooldown(waitSecs)}.`);
       } else if (err.code === 'ERR_NETWORK') {
+        setCooldown(0);
         setServerError('Serveur indisponible. Verifiez votre connexion.');
       } else {
+        setCooldown(0);
         setServerError(msg || 'Erreur inattendue. Reessayez.');
       }
       triggerShake();

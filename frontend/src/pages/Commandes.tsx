@@ -255,14 +255,14 @@ export function Commandes() {
     <div className="space-y-6 animate-fade-in-up">
       {/* Page header */}
       <div className="rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 p-6">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-4 min-w-0">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white/20">
               <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
             </div>
-            <div>
+            <div className="min-w-0">
               <h1 className="text-xl font-bold text-white">Commandes</h1>
               <p className="text-sm text-blue-100">Commandes et devis fournisseurs</p>
             </div>
@@ -273,7 +273,7 @@ export function Commandes() {
               setLockedArticle(false);
               openCreate();
             }}
-            className="rounded-2xl bg-white px-5 py-2.5 text-sm font-medium text-blue-600 shadow-lg transition-all hover:bg-blue-50 hover:shadow-xl"
+            className="shrink-0 rounded-2xl bg-white px-5 py-2.5 text-sm font-medium text-blue-600 shadow-lg transition-all hover:bg-blue-50 hover:shadow-xl"
           >
             + Nouvelle commande
           </button>
@@ -286,7 +286,7 @@ export function Commandes() {
           <svg className="h-5 w-5 flex-shrink-0 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
           </svg>
-          {error}
+          <span className="break-words">{error}</span>
         </div>
       )}
 
@@ -296,162 +296,322 @@ export function Commandes() {
           <svg className="h-5 w-5 flex-shrink-0 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
           </svg>
-          {info}
+          <span className="break-words">{info}</span>
         </div>
       )}
 
       {/* Table */}
-      <div className="overflow-x-auto rounded-2xl border border-gray-200 bg-white shadow-sm">
-        <table className="w-full text-left text-sm">
-          <thead className="border-b border-gray-200 bg-gray-50/80 text-xs uppercase text-gray-500">
-            <tr>
-              <th className="px-4 py-3">Nr commande</th>
-              <th className="px-4 py-3">Date</th>
-              <th className="px-4 py-3">Nr article</th>
-              <th className="px-4 py-3">Nom</th>
-              <th className="px-4 py-3">Nombre</th>
-              <th className="px-4 py-3">Prix unitaire</th>
-              <th className="px-4 py-3">Prix total</th>
-              <th className="px-4 py-3">Fournisseur</th>
-              <th className="px-4 py-3">Contrôle</th>
-              <th className="px-4 py-3">Statut</th>
-              <th className="px-4 py-3">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
+      <div className="rounded-2xl border border-gray-200 bg-white shadow-sm">
+        {/* Desktop table */}
+        <div className="hidden lg:block overflow-x-auto">
+          <table className="w-full text-left text-sm">
+            <thead className="border-b border-gray-200 bg-gray-50/80 text-xs uppercase text-gray-500">
               <tr>
-                <td colSpan={11} className="px-4 py-8 text-center text-gray-500">
-                  <div className="flex items-center justify-center gap-2">
-                    <svg className="h-5 w-5 animate-spin text-blue-500" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                    </svg>
-                    Chargement...
-                  </div>
-                </td>
+                <th className="px-4 py-3">Nr commande</th>
+                <th className="px-4 py-3">Date</th>
+                <th className="px-4 py-3">Nr article</th>
+                <th className="px-4 py-3">Nom</th>
+                <th className="px-4 py-3">Nombre</th>
+                <th className="px-4 py-3">Prix unitaire</th>
+                <th className="px-4 py-3">Prix total</th>
+                <th className="px-4 py-3">Fournisseur</th>
+                <th className="px-4 py-3">Contrôle</th>
+                <th className="px-4 py-3">Statut</th>
+                <th className="px-4 py-3">Actions</th>
               </tr>
-            ) : commandes.length === 0 ? (
-              <tr>
-                <td colSpan={11}>
-                  <div className="text-center py-12">
-                    <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-                    </svg>
-                    <p className="mt-3 text-gray-400 text-sm">Aucune commande pour le moment</p>
-                  </div>
-                </td>
-              </tr>
-            ) : (
-              commandes.map((c, idx) => {
-                const badge = STATUT_BADGE[c.statut];
-                return (
-                  <tr
-                    key={c.id}
-                    className="border-b border-gray-100 transition-colors hover:bg-gray-50/50"
-                    style={{ animationDelay: `${idx * 75}ms` }}
-                  >
-                    <td className="px-4 py-3 font-medium text-gray-800">{c.nr_commande}</td>
-                    <td className="px-4 py-3">{c.date.slice(0, 16).replace('T', ' ')}</td>
-                    <td className="px-4 py-3">{c.nr_article ?? '-'}</td>
-                    <td className="px-4 py-3">{c.article_nom ?? '-'}</td>
-                    <td className="px-4 py-3">{c.nombre}</td>
-                    <td className="px-4 py-3">{c.prix_unitaire != null ? c.prix_unitaire : '-'}</td>
-                    <td className="px-4 py-3">{c.prix_total != null ? c.prix_total : '-'}</td>
-                    <td className="px-4 py-3">{c.fournisseur ?? '-'}</td>
-                    <td className="px-4 py-3">
-                      <span
-                        className={`rounded-full px-3 py-1 text-xs font-medium shadow-sm ${
-                          c.controle ? 'bg-green-50 text-green-700' : 'bg-gray-100 text-gray-600'
-                        }`}
-                      >
-                        {c.controle ? 'Ouvert' : 'Fermé'}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3">
-                      <span className={`rounded-full px-3 py-1 text-xs font-medium shadow-sm ${badge.cls}`}>
-                        {badge.label}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex flex-wrap gap-1.5">
-                        {(c.statut === 'en_attente' || isAdmin) && (
-                          <>
-                            <button
-                              type="button"
-                              onClick={() => openEdit(c)}
-                              className="rounded-xl px-3 py-1.5 text-xs font-medium border border-blue-200 bg-blue-50 text-blue-700 transition-all hover:bg-blue-100 hover:shadow-sm"
-                            >
-                              Modifier
-                            </button>
-                            {c.statut === 'en_attente' && (
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr>
+                  <td colSpan={11} className="px-4 py-8 text-center text-gray-500">
+                    <div className="flex items-center justify-center gap-2">
+                      <svg className="h-5 w-5 animate-spin text-blue-500" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                      </svg>
+                      Chargement...
+                    </div>
+                  </td>
+                </tr>
+              ) : commandes.length === 0 ? (
+                <tr>
+                  <td colSpan={11}>
+                    <div className="text-center py-12">
+                      <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                      </svg>
+                      <p className="mt-3 text-gray-400 text-sm">Aucune commande pour le moment</p>
+                    </div>
+                  </td>
+                </tr>
+              ) : (
+                commandes.map((c, idx) => {
+                  const badge = STATUT_BADGE[c.statut];
+                  return (
+                    <tr
+                      key={c.id}
+                      className="border-b border-gray-100 transition-colors hover:bg-gray-50/50"
+                      style={{ animationDelay: `${idx * 75}ms` }}
+                    >
+                      <td className="px-4 py-3 font-medium text-gray-800">
+                        <span className="max-w-[150px] truncate inline-block" title={c.nr_commande}>{c.nr_commande}</span>
+                      </td>
+                      <td className="px-4 py-3">{c.date.slice(0, 16).replace('T', ' ')}</td>
+                      <td className="px-4 py-3">{c.nr_article ?? '-'}</td>
+                      <td className="px-4 py-3">
+                        <span className="max-w-[150px] truncate inline-block" title={c.article_nom ?? '-'}>{c.article_nom ?? '-'}</span>
+                      </td>
+                      <td className="px-4 py-3">{c.nombre}</td>
+                      <td className="px-4 py-3">{c.prix_unitaire != null ? c.prix_unitaire : '-'}</td>
+                      <td className="px-4 py-3">{c.prix_total != null ? c.prix_total : '-'}</td>
+                      <td className="px-4 py-3">
+                        <span className="max-w-[150px] truncate inline-block" title={c.fournisseur ?? '-'}>{c.fournisseur ?? '-'}</span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <span
+                          className={`rounded-full px-3 py-1 text-xs font-medium shadow-sm ${
+                            c.controle ? 'bg-green-50 text-green-700' : 'bg-gray-100 text-gray-600'
+                          }`}
+                        >
+                          {c.controle ? 'Ouvert' : 'Fermé'}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className={`rounded-full px-3 py-1 text-xs font-medium shadow-sm ${badge.cls}`}>
+                          {badge.label}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex flex-wrap gap-1.5">
+                          {(c.statut === 'en_attente' || isAdmin) && (
+                            <>
+                              <button
+                                type="button"
+                                onClick={() => openEdit(c)}
+                                className="rounded-xl px-3 py-1.5 text-xs font-medium border border-blue-200 bg-blue-50 text-blue-700 transition-all hover:bg-blue-100 hover:shadow-sm"
+                              >
+                                Modifier
+                              </button>
+                              {c.statut === 'en_attente' && (
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    setConfirmTarget({ id: c.id, label: c.nr_commande, type: 'relancer' })
+                                  }
+                                  className="rounded-xl px-3 py-1.5 text-xs font-medium border border-orange-200 bg-orange-50 text-orange-700 transition-all hover:bg-orange-100 hover:shadow-sm"
+                                >
+                                  Relancer fournisseur
+                                </button>
+                              )}
+                              {c.statut === 'en_attente' && (
+                                <button
+                                  type="button"
+                                  disabled={c.prix_unitaire == null || c.prix_unitaire <= 0}
+                                  onClick={() =>
+                                    setConfirmTarget({ id: c.id, label: c.nr_commande, type: 'envoyer' })
+                                  }
+                                  className={`rounded-xl px-3 py-1.5 text-xs font-medium transition-all ${
+                                    c.prix_unitaire == null || c.prix_unitaire <= 0
+                                      ? 'cursor-not-allowed border border-gray-200 bg-gray-100 text-gray-400'
+                                      : 'border border-green-200 bg-green-50 text-green-700 hover:bg-green-100 hover:shadow-sm'
+                                  }`}
+                                >
+                                  Envoyer à l'admin
+                                </button>
+                              )}
                               <button
                                 type="button"
                                 onClick={() =>
-                                  setConfirmTarget({ id: c.id, label: c.nr_commande, type: 'relancer' })
+                                  setConfirmTarget({ id: c.id, label: c.nr_commande, type: 'delete' })
                                 }
-                                className="rounded-xl px-3 py-1.5 text-xs font-medium border border-orange-200 bg-orange-50 text-orange-700 transition-all hover:bg-orange-100 hover:shadow-sm"
+                                className="rounded-xl px-3 py-1.5 text-xs font-medium border border-red-200 bg-red-50 text-red-700 transition-all hover:bg-red-100 hover:shadow-sm"
                               >
-                                Relancer fournisseur
+                                Supprimer
                               </button>
-                            )}
-                            {c.statut === 'en_attente' && (
+                            </>
+                          )}
+                          {c.statut === 'soumis' && isAdmin && (
+                            <>
                               <button
                                 type="button"
-                                disabled={c.prix_unitaire == null || c.prix_unitaire <= 0}
                                 onClick={() =>
-                                  setConfirmTarget({ id: c.id, label: c.nr_commande, type: 'envoyer' })
+                                  setConfirmTarget({ id: c.id, label: c.nr_commande, type: 'approuver' })
                                 }
-                                className={`rounded-xl px-3 py-1.5 text-xs font-medium transition-all ${
-                                  c.prix_unitaire == null || c.prix_unitaire <= 0
-                                    ? 'cursor-not-allowed border border-gray-200 bg-gray-100 text-gray-400'
-                                    : 'border border-green-200 bg-green-50 text-green-700 hover:bg-green-100 hover:shadow-sm'
-                                }`}
+                                className="rounded-xl px-3 py-1.5 text-xs font-medium border border-green-200 bg-green-50 text-green-700 transition-all hover:bg-green-100 hover:shadow-sm"
                               >
-                                Envoyer à l'admin
+                                Approuver
                               </button>
-                            )}
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setConfirmTarget({ id: c.id, label: c.nr_commande, type: 'refuser' })
+                                }
+                                className="rounded-xl px-3 py-1.5 text-xs font-medium border border-red-200 bg-red-50 text-red-700 transition-all hover:bg-red-100 hover:shadow-sm"
+                              >
+                                Refuser
+                              </button>
+                            </>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Mobile card view */}
+        <div className="lg:hidden divide-y divide-gray-100">
+          {loading ? (
+            <div className="px-4 py-8 text-center text-gray-500">
+              <div className="flex items-center justify-center gap-2">
+                <svg className="h-5 w-5 animate-spin text-blue-500" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+                Chargement...
+              </div>
+            </div>
+          ) : commandes.length === 0 ? (
+            <div className="text-center py-12">
+              <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+              </svg>
+              <p className="mt-3 text-gray-400 text-sm">Aucune commande pour le moment</p>
+            </div>
+          ) : (
+            commandes.map((c, idx) => {
+              const badge = STATUT_BADGE[c.statut];
+              return (
+                <div
+                  key={c.id}
+                  className="p-4 space-y-3"
+                  style={{ animationDelay: `${idx * 75}ms` }}
+                >
+                  {/* Top: nr_commande + statut */}
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-medium text-gray-800 truncate" title={c.nr_commande}>{c.nr_commande}</span>
+                    <span className={`shrink-0 rounded-full px-3 py-1 text-xs font-medium shadow-sm ${badge.cls}`}>
+                      {badge.label}
+                    </span>
+                  </div>
+                  {/* Middle: info grid */}
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+                    <div>
+                      <span className="text-gray-500">Date</span>
+                      <p className="text-gray-800">{c.date.slice(0, 16).replace('T', ' ')}</p>
+                    </div>
+                    <div>
+                      <span className="text-gray-500">Article</span>
+                      <p className="text-gray-800 truncate" title={c.article_nom ?? '-'}>
+                        <span className="text-gray-600">{c.nr_article ?? '-'}</span> {c.article_nom ?? '-'}
+                      </p>
+                    </div>
+                    <div>
+                      <span className="text-gray-500">Nombre</span>
+                      <p className="text-gray-800">{c.nombre}</p>
+                    </div>
+                    <div>
+                      <span className="text-gray-500">Prix unitaire</span>
+                      <p className="text-gray-800">{c.prix_unitaire != null ? c.prix_unitaire : '-'}</p>
+                    </div>
+                    <div>
+                      <span className="text-gray-500">Prix total</span>
+                      <p className="text-gray-800">{c.prix_total != null ? c.prix_total : '-'}</p>
+                    </div>
+                    <div>
+                      <span className="text-gray-500">Fournisseur</span>
+                      <p className="text-gray-800 truncate" title={c.fournisseur ?? '-'}>{c.fournisseur ?? '-'}</p>
+                    </div>
+                  </div>
+                  {/* Bottom: controle + actions */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <span
+                      className={`self-start rounded-full px-3 py-1 text-xs font-medium shadow-sm ${
+                        c.controle ? 'bg-green-50 text-green-700' : 'bg-gray-100 text-gray-600'
+                      }`}
+                    >
+                      {c.controle ? 'Ouvert' : 'Fermé'}
+                    </span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {(c.statut === 'en_attente' || isAdmin) && (
+                        <>
+                          <button
+                            type="button"
+                            onClick={() => openEdit(c)}
+                            className="rounded-xl px-3 py-1.5 text-xs font-medium border border-blue-200 bg-blue-50 text-blue-700 transition-all hover:bg-blue-100 hover:shadow-sm"
+                          >
+                            Modifier
+                          </button>
+                          {c.statut === 'en_attente' && (
                             <button
                               type="button"
                               onClick={() =>
-                                setConfirmTarget({ id: c.id, label: c.nr_commande, type: 'delete' })
+                                setConfirmTarget({ id: c.id, label: c.nr_commande, type: 'relancer' })
                               }
-                              className="rounded-xl px-3 py-1.5 text-xs font-medium border border-red-200 bg-red-50 text-red-700 transition-all hover:bg-red-100 hover:shadow-sm"
+                              className="rounded-xl px-3 py-1.5 text-xs font-medium border border-orange-200 bg-orange-50 text-orange-700 transition-all hover:bg-orange-100 hover:shadow-sm"
                             >
-                              Supprimer
+                              Relancer fournisseur
                             </button>
-                          </>
-                        )}
-                        {c.statut === 'soumis' && isAdmin && (
-                          <>
+                          )}
+                          {c.statut === 'en_attente' && (
                             <button
                               type="button"
+                              disabled={c.prix_unitaire == null || c.prix_unitaire <= 0}
                               onClick={() =>
-                                setConfirmTarget({ id: c.id, label: c.nr_commande, type: 'approuver' })
+                                setConfirmTarget({ id: c.id, label: c.nr_commande, type: 'envoyer' })
                               }
-                              className="rounded-xl px-3 py-1.5 text-xs font-medium border border-green-200 bg-green-50 text-green-700 transition-all hover:bg-green-100 hover:shadow-sm"
+                              className={`rounded-xl px-3 py-1.5 text-xs font-medium transition-all ${
+                                c.prix_unitaire == null || c.prix_unitaire <= 0
+                                  ? 'cursor-not-allowed border border-gray-200 bg-gray-100 text-gray-400'
+                                  : 'border border-green-200 bg-green-50 text-green-700 hover:bg-green-100 hover:shadow-sm'
+                              }`}
                             >
-                              Approuver
+                              Envoyer à l'admin
                             </button>
-                            <button
-                              type="button"
-                              onClick={() =>
-                                setConfirmTarget({ id: c.id, label: c.nr_commande, type: 'refuser' })
-                              }
-                              className="rounded-xl px-3 py-1.5 text-xs font-medium border border-red-200 bg-red-50 text-red-700 transition-all hover:bg-red-100 hover:shadow-sm"
-                            >
-                              Refuser
-                            </button>
-                          </>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })
-            )}
-          </tbody>
-        </table>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setConfirmTarget({ id: c.id, label: c.nr_commande, type: 'delete' })
+                            }
+                            className="rounded-xl px-3 py-1.5 text-xs font-medium border border-red-200 bg-red-50 text-red-700 transition-all hover:bg-red-100 hover:shadow-sm"
+                          >
+                            Supprimer
+                          </button>
+                        </>
+                      )}
+                      {c.statut === 'soumis' && isAdmin && (
+                        <>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setConfirmTarget({ id: c.id, label: c.nr_commande, type: 'approuver' })
+                            }
+                            className="rounded-xl px-3 py-1.5 text-xs font-medium border border-green-200 bg-green-50 text-green-700 transition-all hover:bg-green-100 hover:shadow-sm"
+                          >
+                            Approuver
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setConfirmTarget({ id: c.id, label: c.nr_commande, type: 'refuser' })
+                            }
+                            className="rounded-xl px-3 py-1.5 text-xs font-medium border border-red-200 bg-red-50 text-red-700 transition-all hover:bg-red-100 hover:shadow-sm"
+                          >
+                            Refuser
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
       </div>
 
       {/* Modal */}
@@ -461,7 +621,7 @@ export function Commandes() {
           onClose={() => setShowModal(false)}
         >
           <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="mb-1 block text-sm font-medium text-gray-700">Nr commande</label>
                 <input
@@ -528,7 +688,7 @@ export function Commandes() {
               )}
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
                 <label className="mb-1 block text-sm font-medium text-gray-700">Nombre</label>
                 <input
@@ -602,11 +762,11 @@ export function Commandes() {
                 <svg className="h-4 w-4 flex-shrink-0 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
-                {formError}
+                <span className="break-words">{formError}</span>
               </div>
             )}
 
-            <div className="flex justify-end gap-2 pt-2">
+            <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 pt-2">
               <button
                 type="button"
                 onClick={() => setShowModal(false)}

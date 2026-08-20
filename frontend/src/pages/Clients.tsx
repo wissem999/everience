@@ -128,15 +128,15 @@ export function Clients() {
   return (
     <div className="animate-fade-in-up space-y-6">
       {/* Page Header */}
-      <div className="flex items-center justify-between">
-        <div>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="min-w-0">
           <h1 className="text-2xl font-bold text-gray-900">Clients</h1>
           <p className="mt-1 text-sm text-gray-500">Gestion des clients</p>
         </div>
         <button
           type="button"
           onClick={openCreate}
-          className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-200 transition-all hover:shadow-xl hover:shadow-blue-300"
+          className="shrink-0 flex items-center gap-2 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-200 transition-all hover:shadow-xl hover:shadow-blue-300"
         >
           <Plus className="h-4 w-4" />
           Nouveau client
@@ -160,7 +160,7 @@ export function Clients() {
 
       {/* Error */}
       {error && (
-        <div className="animate-fade-in rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+        <div className="animate-fade-in rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 break-words">
           {error}
         </div>
       )}
@@ -173,47 +173,99 @@ export function Clients() {
         </div>
       ) : (
         <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm animate-fade-in delay-100">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr className="text-left text-xs uppercase text-gray-500">
-                <th className="px-6 py-4 font-medium">Nom</th>
-                <th className="px-6 py-4 font-medium">Ville</th>
-                <th className="px-6 py-4 font-medium">Pays</th>
-                <th className="px-6 py-4 font-medium">Telephone</th>
-                <th className="px-6 py-4 font-medium">Email</th>
-                <th className="px-6 py-4 text-right font-medium">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {rows.map((c) => (
-                <tr key={c.id} className="transition-colors hover:bg-gray-50">
-                  <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">{c.nom}</td>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600">{c.ville ?? '\u2014'}</td>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600">{c.pays ?? '\u2014'}</td>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600">{c.telephone ?? '\u2014'}</td>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600">{c.mail ?? '\u2014'}</td>
-                  <td className="whitespace-nowrap px-6 py-4 text-right">
-                    <button
-                      type="button"
-                      onClick={() => openEdit(c)}
-                      className="mr-2 inline-flex items-center gap-1 rounded-lg bg-blue-50 px-3 py-1.5 text-xs font-medium text-blue-600 transition-colors hover:bg-blue-100"
-                    >
-                      <Pencil className="h-3 w-3" />
-                      Modifier
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleDelete(c)}
-                      className="inline-flex items-center gap-1 rounded-lg bg-red-50 px-3 py-1.5 text-xs font-medium text-red-600 transition-colors hover:bg-red-100"
-                    >
-                      <Trash2 className="h-3 w-3" />
-                      Supprimer
-                    </button>
-                  </td>
+          {/* Desktop Table */}
+          <div className="hidden md:block overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr className="text-left text-xs uppercase text-gray-500">
+                  <th className="px-6 py-4 font-medium">Nom</th>
+                  <th className="px-6 py-4 font-medium">Ville</th>
+                  <th className="px-6 py-4 font-medium">Pays</th>
+                  <th className="px-6 py-4 font-medium">Telephone</th>
+                  <th className="px-6 py-4 font-medium">Email</th>
+                  <th className="px-6 py-4 text-right font-medium">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {rows.map((c) => (
+                  <tr key={c.id} className="transition-colors hover:bg-gray-50">
+                    <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900 max-w-[150px] truncate" title={c.nom}>{c.nom}</td>
+                    <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600 max-w-[150px] truncate" title={c.ville ?? undefined}>{c.ville ?? '\u2014'}</td>
+                    <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600 max-w-[150px] truncate" title={c.pays ?? undefined}>{c.pays ?? '\u2014'}</td>
+                    <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600 max-w-[150px] truncate" title={c.telephone ?? undefined}>{c.telephone ?? '\u2014'}</td>
+                    <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600 max-w-[150px] truncate" title={c.mail ?? undefined}>{c.mail ?? '\u2014'}</td>
+                    <td className="whitespace-nowrap px-6 py-4 text-right">
+                      <button
+                        type="button"
+                        onClick={() => openEdit(c)}
+                        className="mr-2 inline-flex items-center gap-1 rounded-lg bg-blue-50 px-3 py-1.5 text-xs font-medium text-blue-600 transition-colors hover:bg-blue-100"
+                      >
+                        <Pencil className="h-3 w-3" />
+                        Modifier
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(c)}
+                        className="inline-flex items-center gap-1 rounded-lg bg-red-50 px-3 py-1.5 text-xs font-medium text-red-600 transition-colors hover:bg-red-100"
+                      >
+                        <Trash2 className="h-3 w-3" />
+                        Supprimer
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Cards */}
+          <div className="md:hidden divide-y divide-gray-100">
+            {rows.map((c) => (
+              <div key={c.id} className="p-4 space-y-3">
+                <div className="flex items-start justify-between gap-2">
+                  <p className="text-sm font-semibold text-gray-900 min-w-0 truncate">{c.nom}</p>
+                </div>
+                <div className="space-y-1.5 text-sm">
+                  {(c.ville || c.pays) && (
+                    <div className="flex gap-1.5">
+                      <span className="text-gray-400 shrink-0">Lieu :</span>
+                      <span className="text-gray-600 min-w-0 truncate">{[c.ville, c.pays].filter(Boolean).join(', ')}</span>
+                    </div>
+                  )}
+                  {c.telephone && (
+                    <div className="flex gap-1.5">
+                      <span className="text-gray-400 shrink-0">Tel :</span>
+                      <span className="text-gray-600 min-w-0 truncate">{c.telephone}</span>
+                    </div>
+                  )}
+                  {c.mail && (
+                    <div className="flex gap-1.5">
+                      <span className="text-gray-400 shrink-0">Email :</span>
+                      <span className="text-gray-600 min-w-0 truncate">{c.mail}</span>
+                    </div>
+                  )}
+                </div>
+                <div className="flex gap-2 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => openEdit(c)}
+                    className="flex-1 inline-flex items-center justify-center gap-1 rounded-lg bg-blue-50 px-3 py-2 text-xs font-medium text-blue-600 transition-colors hover:bg-blue-100"
+                  >
+                    <Pencil className="h-3 w-3" />
+                    Modifier
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleDelete(c)}
+                    className="flex-1 inline-flex items-center justify-center gap-1 rounded-lg bg-red-50 px-3 py-2 text-xs font-medium text-red-600 transition-colors hover:bg-red-100"
+                  >
+                    <Trash2 className="h-3 w-3" />
+                    Supprimer
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
 
           {/* Empty State */}
           {rows.length === 0 && (
@@ -247,7 +299,7 @@ export function Clients() {
               value={form.adresse}
               onChange={(e) => set('adresse')(e.target.value)}
             />
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <TextInput
                 label="Ville"
                 value={form.ville}
@@ -259,7 +311,7 @@ export function Clients() {
                 onChange={(e) => set('pays')(e.target.value)}
               />
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <TextInput
                 label="Telephone"
                 value={form.telephone}
@@ -274,10 +326,10 @@ export function Clients() {
             </div>
 
             {modalError && (
-              <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600">{modalError}</div>
+              <div className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-600 break-words">{modalError}</div>
             )}
 
-            <div className="flex justify-end gap-3 border-t border-gray-100 pt-4">
+            <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 border-t border-gray-100 pt-4">
               <button
                 type="button"
                 onClick={() => setModalOpen(false)}

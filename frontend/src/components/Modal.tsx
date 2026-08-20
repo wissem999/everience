@@ -26,10 +26,10 @@ export function Modal({ title, onClose, children, maxWidth = 'max-w-lg', isOpen 
   const maxW = maxWidth === 'max-w-xl' ? '36rem' : maxWidth === 'max-w-md' ? '28rem' : '32rem';
 
   const modal = (
-    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
       <div
-        className="animate-scale-in"
-        style={{ width: '100%', maxWidth: maxW, maxHeight: '85vh', overflowY: 'auto', borderRadius: '1rem', backgroundColor: '#fff', padding: '1.5rem', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)' }}
+        className="animate-scale-in w-full max-h-[90dvh] overflow-y-auto sm:max-h-[85vh]"
+        style={{ maxWidth: maxW, borderRadius: '1rem', backgroundColor: '#fff', padding: 'clamp(1rem, 3vw, 1.5rem)', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)' }}
       >
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
           <h2 style={{ fontSize: '1.125rem', fontWeight: 700, color: '#111827' }}>{title}</h2>

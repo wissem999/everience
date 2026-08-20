@@ -60,6 +60,7 @@ export interface Booking {
   fournisseur?: string;
   client?: string;
   nr_article?: string;
+  article_nom?: string;
   nombre: number;
   date: string;
 }

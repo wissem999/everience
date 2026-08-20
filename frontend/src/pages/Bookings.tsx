@@ -258,8 +258,6 @@ export function Bookings() {
     return t;
   }, [bookings]);
 
-  const applyFilters = () => {};
-
   const handlePackSelect = (packId: string) => {
     setSelectedPackId(packId);
     setPackMultiplier(1);
@@ -321,35 +319,35 @@ export function Bookings() {
   return (
     <div className="space-y-6 p-6">
       {/* Header */}
-      <div className="animate-fade-in-up rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-white shadow-lg">
-        <div className="flex items-center justify-between">
-          <div>
-            <div className="mb-2 flex items-center gap-3">
-              <div className="rounded-xl bg-white/20 p-3">
+      <div className="animate-fade-in-up rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 p-4 sm:p-6 text-white shadow-lg">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="min-w-0">
+            <div className="flex items-center gap-3">
+              <div className="rounded-xl bg-white/20 p-3 shrink-0">
                 <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
                 </svg>
               </div>
-              <div>
+              <div className="min-w-0">
                 <h1 className="text-xl font-bold">Booking</h1>
-                <p className="text-blue-100">Gestion des entrées, sorties, retours et corbeille</p>
+                <p className="text-blue-100 text-sm sm:text-base">Gestion des entrees, sorties, retours et corbeille</p>
               </div>
             </div>
           </div>
-          <div className="flex gap-3">
+          <div className="flex gap-3 shrink-0">
             <button
               type="button"
               onClick={() => setShowStockSummary(!showStockSummary)}
-              className="rounded-xl border-2 border-white/30 px-4 py-2 text-sm font-medium text-white transition-all hover:border-white/50 hover:bg-white/10"
+              className="rounded-xl border-2 border-white/30 px-3 sm:px-4 py-2 text-sm font-medium text-white transition-all hover:border-white/50 hover:bg-white/10"
             >
-              {showStockSummary ? 'Masquer stock' : 'Résumé stock'}
+              {showStockSummary ? 'Masquer stock' : 'Resume stock'}
             </button>
             <button
               type="button"
               onClick={openCreate}
-              className="rounded-xl bg-white px-4 py-2 text-sm font-medium text-blue-600 shadow-lg transition-all hover:shadow-xl hover:bg-blue-50"
+              className="rounded-xl bg-white px-3 sm:px-4 py-2 text-sm font-medium text-blue-600 shadow-lg transition-all hover:shadow-xl hover:bg-blue-50"
             >
-              + Nouveau booking
+              + Nouveau
             </button>
           </div>
         </div>
@@ -370,74 +368,74 @@ export function Bookings() {
       )}
 
       {/* Stats Row */}
-      <div className="grid grid-cols-5 gap-4">
-        <div className="animate-fade-in-up rounded-2xl bg-gradient-to-br from-green-50 to-green-100 p-4 shadow-sm" style={{ animationDelay: '0.1s' }}>
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+        <div className="animate-fade-in-up rounded-2xl bg-gradient-to-br from-green-50 to-green-100 p-3 sm:p-4 shadow-sm" style={{ animationDelay: '0.1s' }}>
           <div className="mb-2 flex items-center gap-2">
-            <div className="rounded-lg bg-green-200 p-2">
+            <div className="rounded-lg bg-green-200 p-1.5 sm:p-2 shrink-0">
               <svg className="h-4 w-4 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
               </svg>
             </div>
-            <p className="text-xs font-medium text-green-700">Entrées</p>
+            <p className="text-xs font-medium text-green-700">Entrees</p>
           </div>
-          <p className="text-2xl font-bold text-green-700">{totals.entree}</p>
+          <p className="text-xl sm:text-2xl font-bold text-green-700">{totals.entree}</p>
         </div>
 
-        <div className="animate-fade-in-up rounded-2xl bg-gradient-to-br from-red-50 to-red-100 p-4 shadow-sm" style={{ animationDelay: '0.2s' }}>
+        <div className="animate-fade-in-up rounded-2xl bg-gradient-to-br from-red-50 to-red-100 p-3 sm:p-4 shadow-sm" style={{ animationDelay: '0.2s' }}>
           <div className="mb-2 flex items-center gap-2">
-            <div className="rounded-lg bg-red-200 p-2">
+            <div className="rounded-lg bg-red-200 p-1.5 sm:p-2 shrink-0">
               <svg className="h-4 w-4 text-red-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
               </svg>
             </div>
             <p className="text-xs font-medium text-red-700">Sorties</p>
           </div>
-          <p className="text-2xl font-bold text-red-700">{totals.sortie}</p>
+          <p className="text-xl sm:text-2xl font-bold text-red-700">{totals.sortie}</p>
         </div>
 
-        <div className="animate-fade-in-up rounded-2xl bg-gradient-to-br from-blue-50 to-blue-100 p-4 shadow-sm" style={{ animationDelay: '0.3s' }}>
+        <div className="animate-fade-in-up rounded-2xl bg-gradient-to-br from-blue-50 to-blue-100 p-3 sm:p-4 shadow-sm" style={{ animationDelay: '0.3s' }}>
           <div className="mb-2 flex items-center gap-2">
-            <div className="rounded-lg bg-blue-200 p-2">
+            <div className="rounded-lg bg-blue-200 p-1.5 sm:p-2 shrink-0">
               <svg className="h-4 w-4 text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
               </svg>
             </div>
             <p className="text-xs font-medium text-blue-700">Retours</p>
           </div>
-          <p className="text-2xl font-bold text-blue-700">{totals.retour}</p>
+          <p className="text-xl sm:text-2xl font-bold text-blue-700">{totals.retour}</p>
         </div>
 
-        <div className="animate-fade-in-up rounded-2xl bg-gradient-to-br from-yellow-50 to-yellow-100 p-4 shadow-sm" style={{ animationDelay: '0.4s' }}>
+        <div className="animate-fade-in-up rounded-2xl bg-gradient-to-br from-yellow-50 to-yellow-100 p-3 sm:p-4 shadow-sm" style={{ animationDelay: '0.4s' }}>
           <div className="mb-2 flex items-center gap-2">
-            <div className="rounded-lg bg-yellow-200 p-2">
+            <div className="rounded-lg bg-yellow-200 p-1.5 sm:p-2 shrink-0">
               <svg className="h-4 w-4 text-yellow-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
               </svg>
             </div>
             <p className="text-xs font-medium text-yellow-700">Corbeille</p>
           </div>
-          <p className="text-2xl font-bold text-yellow-700">{totals.corbeille}</p>
+          <p className="text-xl sm:text-2xl font-bold text-yellow-700">{totals.corbeille}</p>
         </div>
 
-        <div className="animate-fade-in-up rounded-2xl bg-gradient-to-br from-purple-50 to-purple-100 p-4 shadow-sm" style={{ animationDelay: '0.5s' }}>
+        <div className="animate-fade-in-up rounded-2xl bg-gradient-to-br from-purple-50 to-purple-100 p-3 sm:p-4 shadow-sm col-span-2 sm:col-span-3 lg:col-span-1" style={{ animationDelay: '0.5s' }}>
           <div className="mb-2 flex items-center gap-2">
-            <div className="rounded-lg bg-purple-200 p-2">
+            <div className="rounded-lg bg-purple-200 p-1.5 sm:p-2 shrink-0">
               <svg className="h-4 w-4 text-purple-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
               </svg>
             </div>
-            <p className="text-xs font-medium text-purple-700">Récupérations</p>
+            <p className="text-xs font-medium text-purple-700">Recuperations</p>
           </div>
-          <p className="text-2xl font-bold text-purple-700">{totals.recuperation}</p>
+          <p className="text-xl sm:text-2xl font-bold text-purple-700">{totals.recuperation}</p>
         </div>
       </div>
 
       {/* Stock Summary Panel */}
       {showStockSummary && (
-        <div className="animate-fade-in-up rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <h2 className="mb-4 text-lg font-bold text-gray-800">Résumé du stock par article</h2>
+        <div className="animate-fade-in-up rounded-2xl border border-gray-200 bg-white p-4 sm:p-6 shadow-sm">
+          <h2 className="mb-4 text-lg font-bold text-gray-800">Resume du stock par article</h2>
           <div className="overflow-x-auto rounded-xl border border-gray-200">
-            <table className="w-full text-left text-sm">
+            <table className="w-full text-left text-sm min-w-[500px]">
               <thead className="bg-gray-50/80 text-xs uppercase text-gray-500">
                 <tr>
                   <th className="rounded-tl-xl px-4 py-3">Article</th>
@@ -496,27 +494,27 @@ export function Bookings() {
 
       {/* Filter Bar */}
       <div className="animate-fade-in-up rounded-2xl border border-gray-200 bg-white p-4 shadow-sm" style={{ animationDelay: '0.1s' }}>
-        <div className="flex flex-wrap items-end gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3 items-end">
           <div>
             <label className="mb-1 block text-xs font-medium text-gray-500">Type</label>
             <select
-              className="rounded-xl border border-gray-200 px-3 py-2 text-sm focus:ring-4 focus:ring-blue-100 focus:outline-none"
+              className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm focus:ring-4 focus:ring-blue-100 focus:outline-none"
               value={filters.type ?? 'all'}
               onChange={(e) => setFilters({ ...filters, type: e.target.value })}
             >
               <option value="all">Tous</option>
-              <option value="entree">Entrée</option>
+              <option value="entree">Entree</option>
               <option value="sortie">Sortie</option>
               <option value="retour">Retour</option>
               <option value="corbeille">Corbeille</option>
-              <option value="recuperation">Récupération</option>
+              <option value="recuperation">Recuperation</option>
             </select>
           </div>
           <div>
-            <label className="mb-1 block text-xs font-medium text-gray-500">Date début</label>
+            <label className="mb-1 block text-xs font-medium text-gray-500">Date debut</label>
             <input
               type="date"
-              className="rounded-xl border border-gray-200 px-3 py-2 text-sm focus:ring-4 focus:ring-blue-100 focus:outline-none"
+              className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm focus:ring-4 focus:ring-blue-100 focus:outline-none"
               value={filters.date_from ?? ''}
               onChange={(e) => setFilters({ ...filters, date_from: e.target.value })}
             />
@@ -525,7 +523,7 @@ export function Bookings() {
             <label className="mb-1 block text-xs font-medium text-gray-500">Date fin</label>
             <input
               type="date"
-              className="rounded-xl border border-gray-200 px-3 py-2 text-sm focus:ring-4 focus:ring-blue-100 focus:outline-none"
+              className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm focus:ring-4 focus:ring-blue-100 focus:outline-none"
               value={filters.date_to ?? ''}
               onChange={(e) => setFilters({ ...filters, date_to: e.target.value })}
             />
@@ -533,7 +531,7 @@ export function Bookings() {
           <div>
             <label className="mb-1 block text-xs font-medium text-gray-500">Client</label>
             <select
-              className="rounded-xl border border-gray-200 px-3 py-2 text-sm focus:ring-4 focus:ring-blue-100 focus:outline-none"
+              className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm focus:ring-4 focus:ring-blue-100 focus:outline-none"
               value={filters.client_id ?? ''}
               onChange={(e) => setFilters({ ...filters, client_id: e.target.value ? Number(e.target.value) : undefined })}
             >
@@ -546,7 +544,7 @@ export function Bookings() {
           <div>
             <label className="mb-1 block text-xs font-medium text-gray-500">Fournisseur</label>
             <select
-              className="rounded-xl border border-gray-200 px-3 py-2 text-sm focus:ring-4 focus:ring-blue-100 focus:outline-none"
+              className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm focus:ring-4 focus:ring-blue-100 focus:outline-none"
               value={filters.fournisseur_id ?? ''}
               onChange={(e) => setFilters({ ...filters, fournisseur_id: e.target.value ? Number(e.target.value) : undefined })}
             >
@@ -556,110 +554,200 @@ export function Bookings() {
               ))}
             </select>
           </div>
-          <div>
-            <label className="mb-1 block text-xs font-medium text-gray-500">Article</label>
-            <select
-              className="rounded-xl border border-gray-200 px-3 py-2 text-sm focus:ring-4 focus:ring-blue-100 focus:outline-none"
-              value={filters.article_id ?? ''}
-              onChange={(e) => setFilters({ ...filters, article_id: e.target.value ? Number(e.target.value) : undefined })}
+          <div className="flex items-end gap-2">
+            <div className="flex-1">
+              <label className="mb-1 block text-xs font-medium text-gray-500">Article</label>
+              <select
+                className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm focus:ring-4 focus:ring-blue-100 focus:outline-none"
+                value={filters.article_id ?? ''}
+                onChange={(e) => setFilters({ ...filters, article_id: e.target.value ? Number(e.target.value) : undefined })}
+              >
+                <option value="">Tous</option>
+                {articles.map((a) => (
+                  <option key={a.id} value={a.id}>{a.num_article} - {a.nom}</option>
+                ))}
+              </select>
+            </div>
+            <button
+              type="button"
+              onClick={() => setFilters({ type: 'all' })}
+              className="rounded-xl border border-gray-200 px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 shrink-0"
             >
-              <option value="">Tous</option>
-              {articles.map((a) => (
-                <option key={a.id} value={a.id}>{a.num_article} - {a.nom}</option>
-              ))}
-            </select>
+              Reset
+            </button>
           </div>
-          <button
-            type="button"
-            onClick={() => setFilters({ type: 'all' })}
-            className="rounded-xl border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50"
-          >
-            Réinitialiser
-          </button>
         </div>
       </div>
 
       {/* Main Table */}
-      <div className="animate-fade-in-up overflow-x-auto rounded-2xl border border-gray-200 bg-white shadow-sm" style={{ animationDelay: '0.2s' }}>
-        <table className="w-full text-left text-sm">
-          <thead className="bg-gray-50/80 text-xs uppercase text-gray-500">
-            <tr>
-              <th className="rounded-tl-2xl px-4 py-3">Type</th>
-              <th className="px-4 py-3">Nr facture</th>
-              <th className="px-4 py-3">Nr bon de commande</th>
-              <th className="px-4 py-3">Fournisseur</th>
-              <th className="px-4 py-3">Client</th>
-              <th className="px-4 py-3">Article</th>
-              <th className="px-4 py-3">Nombre</th>
-              <th className="px-4 py-3">Date</th>
-              <th className="rounded-tr-2xl px-4 py-3">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ? (
+      <div className="animate-fade-in-up overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm" style={{ animationDelay: '0.2s' }}>
+        {/* Desktop table */}
+        <div className="hidden md:block overflow-x-auto">
+          <table className="w-full text-left text-sm">
+            <thead className="bg-gray-50/80 text-xs uppercase text-gray-500">
               <tr>
-                <td colSpan={9} className="px-4 py-12 text-center text-gray-500">
-                  <div className="flex flex-col items-center gap-2">
-                    <svg className="h-8 w-8 animate-spin text-blue-500" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    <span className="text-sm font-medium">Chargement...</span>
-                  </div>
-                </td>
+                <th className="rounded-tl-2xl px-4 py-3">Type</th>
+                <th className="px-4 py-3">Nr facture</th>
+                <th className="px-4 py-3">Nr bon de commande</th>
+                <th className="px-4 py-3">Fournisseur</th>
+                <th className="px-4 py-3">Client</th>
+                <th className="px-4 py-3">Article</th>
+                <th className="px-4 py-3">Nombre</th>
+                <th className="px-4 py-3">Date</th>
+                <th className="rounded-tr-2xl px-4 py-3">Actions</th>
               </tr>
-            ) : bookings.length === 0 ? (
-              <tr>
-                <td colSpan={9} className="px-4 py-12 text-center text-gray-500">
-                  <div className="flex flex-col items-center gap-3">
-                    <div className="rounded-full bg-gray-100 p-4">
-                      <svg className="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr>
+                  <td colSpan={9} className="px-4 py-12 text-center text-gray-500">
+                    <div className="flex flex-col items-center gap-2">
+                      <svg className="h-8 w-8 animate-spin text-blue-500" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                       </svg>
-                    </div>
-                    <span className="text-sm font-medium">Aucun booking pour le moment</span>
-                  </div>
-                </td>
-              </tr>
-            ) : (
-              bookings.map((b) => (
-                <tr key={b.id} className="border-b border-gray-100 hover:bg-gray-50/50">
-                  <td className="px-4 py-3">
-                    <span className={`inline-flex rounded-full px-3 py-1 text-xs font-medium shadow-sm ${TYPE_COLORS[b.type]}`}>
-                      {TYPE_LABELS[b.type]}
-                      {b.type === 'retour' && b.retour_condition ? ` (${b.retour_condition === 'bon' ? 'Bon état' : 'Endommagé'})` : ''}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3">{b.nr_facture ?? '-'}</td>
-                  <td className="px-4 py-3">{b.nr_bon_commande ?? '-'}</td>
-                  <td className="px-4 py-3">{b.fournisseur ?? '-'}</td>
-                  <td className="px-4 py-3">{b.client ?? '-'}</td>
-                  <td className="px-4 py-3">{b.nr_article ?? '-'}{b.article_nom ? ` - ${b.article_nom}` : ''}</td>
-                  <td className="px-4 py-3 font-medium">{b.nombre}</td>
-                  <td className="px-4 py-3">{b.date.slice(0, 16).replace('T', ' ')}</td>
-                  <td className="px-4 py-3">
-                    <div className="flex gap-2">
-                      <button
-                        type="button"
-                        onClick={() => openEdit(b)}
-                        className="rounded-xl border border-blue-200 px-3 py-1.5 text-xs font-medium text-blue-600 transition-all hover:bg-blue-50 hover:shadow-sm"
-                      >
-                        Modifier
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleDelete(b)}
-                        className="rounded-xl border border-red-200 px-3 py-1.5 text-xs font-medium text-red-600 transition-all hover:bg-red-50 hover:shadow-sm"
-                      >
-                        Supprimer
-                      </button>
+                      <span className="text-sm font-medium">Chargement...</span>
                     </div>
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : bookings.length === 0 ? (
+                <tr>
+                  <td colSpan={9} className="px-4 py-12 text-center text-gray-500">
+                    <div className="flex flex-col items-center gap-3">
+                      <div className="rounded-full bg-gray-100 p-4">
+                        <svg className="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                        </svg>
+                      </div>
+                      <span className="text-sm font-medium">Aucun booking pour le moment</span>
+                    </div>
+                  </td>
+                </tr>
+              ) : (
+                bookings.map((b) => (
+                  <tr key={b.id} className="border-b border-gray-100 hover:bg-gray-50/50">
+                    <td className="px-4 py-3">
+                      <span className={`inline-flex rounded-full px-3 py-1 text-xs font-medium shadow-sm ${TYPE_COLORS[b.type]}`}>
+                        {TYPE_LABELS[b.type]}
+                        {b.type === 'retour' && b.retour_condition ? ` (${b.retour_condition === 'bon' ? 'Bon etat' : 'Endommage'})` : ''}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">{b.nr_facture ?? '-'}</td>
+                    <td className="px-4 py-3">{b.nr_bon_commande ?? '-'}</td>
+                    <td className="px-4 py-3 max-w-[150px] truncate" title={b.fournisseur}>{b.fournisseur ?? '-'}</td>
+                    <td className="px-4 py-3 max-w-[150px] truncate" title={b.client}>{b.client ?? '-'}</td>
+                    <td className="px-4 py-3 max-w-[200px] truncate" title={`${b.nr_article ?? ''} ${b.article_nom ? `- ${b.article_nom}` : ''}`}>{b.nr_article ?? '-'}{b.article_nom ? ` - ${b.article_nom}` : ''}</td>
+                    <td className="px-4 py-3 font-medium">{b.nombre}</td>
+                    <td className="px-4 py-3 whitespace-nowrap">{b.date.slice(0, 16).replace('T', ' ')}</td>
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          onClick={() => openEdit(b)}
+                          className="rounded-xl border border-blue-200 px-3 py-1.5 text-xs font-medium text-blue-600 transition-all hover:bg-blue-50 hover:shadow-sm"
+                        >
+                          Modifier
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(b)}
+                          className="rounded-xl border border-red-200 px-3 py-1.5 text-xs font-medium text-red-600 transition-all hover:bg-red-50 hover:shadow-sm"
+                        >
+                          Supprimer
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Mobile card view */}
+        <div className="md:hidden">
+          {loading ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="flex items-center gap-2 text-sm text-gray-500">
+                <div className="h-5 w-5 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
+                Chargement...
+              </div>
+            </div>
+          ) : bookings.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-12">
+              <div className="rounded-full bg-gray-100 p-4 mb-3">
+                <svg className="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                </svg>
+              </div>
+              <span className="text-sm font-medium text-gray-500">Aucun booking</span>
+            </div>
+          ) : (
+            <div className="divide-y divide-gray-100">
+              {bookings.map((b) => (
+                <div key={b.id} className="p-4 space-y-2">
+                  <div className="flex items-start justify-between gap-2">
+                    <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium shadow-sm ${TYPE_COLORS[b.type]}`}>
+                      {TYPE_LABELS[b.type]}
+                      {b.type === 'retour' && b.retour_condition ? ` (${b.retour_condition === 'bon' ? 'Bon' : 'Endommage'})` : ''}
+                    </span>
+                    <span className="text-xs text-gray-500 shrink-0">{b.date.slice(0, 10)}</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
+                    <div className="min-w-0">
+                      <span className="text-xs text-gray-400">Article</span>
+                      <p className="truncate font-medium">{b.nr_article ?? '-'}{b.article_nom ? ` - ${b.article_nom}` : ''}</p>
+                    </div>
+                    <div>
+                      <span className="text-xs text-gray-400">Nombre</span>
+                      <p className="font-medium">{b.nombre}</p>
+                    </div>
+                    {b.fournisseur && (
+                      <div className="min-w-0">
+                        <span className="text-xs text-gray-400">Fournisseur</span>
+                        <p className="truncate">{b.fournisseur}</p>
+                      </div>
+                    )}
+                    {b.client && (
+                      <div className="min-w-0">
+                        <span className="text-xs text-gray-400">Client</span>
+                        <p className="truncate">{b.client}</p>
+                      </div>
+                    )}
+                    {b.nr_facture && (
+                      <div>
+                        <span className="text-xs text-gray-400">Facture</span>
+                        <p className="truncate">{b.nr_facture}</p>
+                      </div>
+                    )}
+                    {b.nr_bon_commande && (
+                      <div>
+                        <span className="text-xs text-gray-400">Bon cmd</span>
+                        <p className="truncate">{b.nr_bon_commande}</p>
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex gap-2 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => openEdit(b)}
+                      className="flex-1 rounded-xl border border-blue-200 px-3 py-2 text-xs font-medium text-blue-600 transition-all hover:bg-blue-50"
+                    >
+                      Modifier
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(b)}
+                      className="flex-1 rounded-xl border border-red-200 px-3 py-2 text-xs font-medium text-red-600 transition-all hover:bg-red-50"
+                    >
+                      Supprimer
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Modal */}
@@ -695,7 +783,7 @@ export function Bookings() {
           {form.type === 'retour' && (
             <div>
               <label className="mb-2 block text-sm font-medium text-gray-700">État du retour</label>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <label
                   className={`cursor-pointer rounded-xl border p-3 transition-all ${
                     form.retour_condition === 'bon'
@@ -708,7 +796,7 @@ export function Bookings() {
                     name="retour_condition"
                     value="bon"
                     checked={form.retour_condition === 'bon'}
-                    onChange={(e) => { setForm({ ...form, retour_condition: 'bon' }); touch('retour_condition'); }}
+                    onChange={() => { setForm({ ...form, retour_condition: 'bon' }); touch('retour_condition'); }}
                     className="sr-only"
                   />
                   <div className="flex items-center gap-2">
@@ -733,7 +821,7 @@ export function Bookings() {
                     name="retour_condition"
                     value="endommage"
                     checked={form.retour_condition === 'endommage'}
-                    onChange={(e) => { setForm({ ...form, retour_condition: 'endommage' }); touch('retour_condition'); }}
+                    onChange={() => { setForm({ ...form, retour_condition: 'endommage' }); touch('retour_condition'); }}
                     className="sr-only"
                   />
                   <div className="flex items-center gap-2">
@@ -750,7 +838,7 @@ export function Bookings() {
             </div>
           )}
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="mb-1 block text-sm font-medium text-gray-700">Nr facture</label>
               <input
@@ -887,7 +975,7 @@ export function Bookings() {
           )}
 
           {(form.type !== 'sortie' || editing || packItems.length === 0) && (
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="mb-1 block text-sm font-medium text-gray-700">Article</label>
                 <select
@@ -938,7 +1026,7 @@ export function Bookings() {
             </div>
           )}
 
-          <div className="flex justify-end gap-3 border-t border-gray-100 pt-4">
+          <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 border-t border-gray-100 pt-4">
             <button
               type="button"
               onClick={() => setShowModal(false)}

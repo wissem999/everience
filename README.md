@@ -1,6 +1,6 @@
 # Everience — Gestion Stock & Contacts
 
-Web app full-stack pour un stage : gestion de **produits**, **fournisseurs** et **clients** avec comptes utilisateurs.
+Web app full-stack pour un stage : gestion d'**articles**, **fournisseurs** et **clients** avec comptes utilisateurs.
 
 ## Stack
 

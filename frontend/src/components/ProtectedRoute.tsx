@@ -11,6 +11,6 @@ export function ProtectedRoute({ children }: { children: ReactNode }) {
 export function AdminRoute({ children }: { children: ReactNode }) {
   const { user } = useAuth();
   if (!user) return <Navigate to="/login" replace />;
-  if (user.role !== 'admin') return <Navigate to="/products" replace />;
+  if (user.role !== 'admin') return <Navigate to="/articles" replace />;
   return <>{children}</>;
 }

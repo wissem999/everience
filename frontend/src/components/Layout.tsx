@@ -1,14 +1,33 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useState } from 'react';
 
-const navLinkClass = ({ isActive }: { isActive: boolean }) =>
-  `block rounded-md px-4 py-2 text-sm font-medium transition-colors ${
-    isActive ? 'bg-blue-600 text-white' : 'text-gray-700 hover:bg-gray-100'
-  }`;
+const NAV_ITEMS = [
+  { to: '/articles', label: 'Articles', icon: 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4' },
+  { to: '/bookings', label: 'Bookings', icon: 'M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5' },
+  { to: '/packs', label: 'Packs', icon: 'M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9' },
+  { to: '/commandes', label: 'Commandes', icon: 'M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z' },
+  { to: '/fournisseurs', label: 'Fournisseurs', icon: 'M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H18.75m-7.5-3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z' },
+  { to: '/clients', label: 'Clients', icon: 'M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z' },
+];
+
+const ADMIN_ITEMS = [
+  { to: '/users', label: 'Utilisateurs', icon: 'M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z M15 12a3 3 0 11-6 0 3 3 0 016 0z' },
+  { to: '/settings', label: 'Parametres', icon: 'M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z M15 12a3 3 0 11-6 0 3 3 0 016 0z' },
+];
+
+function Icon({ d, className = 'h-5 w-5' }: { d: string; className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+      <path strokeLinecap="round" strokeLinejoin="round" d={d} />
+    </svg>
+  );
+}
 
 export function Layout() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [collapsed, setCollapsed] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -16,44 +35,119 @@ export function Layout() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
-      <aside className="flex w-56 flex-col border-r border-gray-200 bg-white">
-        <div className="border-b border-gray-200 px-4 py-5">
-          <h1 className="text-xl font-bold text-gray-800">Everience</h1>
-          <p className="text-xs text-gray-500">Gestion stock &amp; contacts</p>
-        </div>
-        <nav className="flex-1 space-y-1 p-3">
-          <NavLink to="/products" className={navLinkClass}>
-            Produits
-          </NavLink>
-          <NavLink to="/fournisseurs" className={navLinkClass}>
-            Fournisseurs
-          </NavLink>
-          <NavLink to="/clients" className={navLinkClass}>
-            Clients
-          </NavLink>
-          {user?.role === 'admin' && (
-            <NavLink to="/users" className={navLinkClass}>
-              Utilisateurs
-            </NavLink>
+    <div className="flex min-h-screen bg-gray-50">
+      {/* Sidebar */}
+      <aside style={{ '--sidebar-w': collapsed ? '68px' : '256px' } as React.CSSProperties} className={`flex flex-col border-r border-gray-800 bg-gray-900 transition-all duration-300 ${collapsed ? 'w-[68px]' : 'w-64'}`}>
+        {/* Logo */}
+        <div className="flex h-16 items-center justify-between border-b border-gray-800 px-4">
+          {!collapsed && (
+            <div className="flex items-center gap-2.5">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg shadow-blue-500/25">
+                <svg className="h-4.5 w-4.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5M9 11.25v1.5M12 9v3.75m3-6v6" />
+                </svg>
+              </div>
+              <span className="text-base font-bold text-white tracking-tight">Everience</span>
+            </div>
           )}
-        </nav>
-        <div className="border-t border-gray-200 p-4">
-          <p className="text-sm font-medium text-gray-800">{user?.nom}</p>
-          <p className="mb-2 text-xs text-gray-500">
-            {user?.role === 'admin' ? 'Administrateur' : 'Utilisateur'}
-          </p>
           <button
             type="button"
-            onClick={handleLogout}
-            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
+            onClick={() => setCollapsed(!collapsed)}
+            className="flex h-7 w-7 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-white/10 hover:text-white"
           >
-            Déconnexion
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              {collapsed ? (
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+              )}
+            </svg>
           </button>
         </div>
+
+        {/* Navigation */}
+        <nav className="flex-1 space-y-1 px-3 py-4">
+          {!collapsed && <p className="mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-gray-500">Menu</p>}
+          {NAV_ITEMS.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              className={({ isActive }) =>
+                `nav-item ${isActive ? 'active' : ''} ${collapsed ? 'justify-center px-0' : ''}`
+              }
+              title={collapsed ? item.label : undefined}
+            >
+              <Icon d={item.icon} />
+              {!collapsed && <span>{item.label}</span>}
+            </NavLink>
+          ))}
+
+          {user?.role === 'admin' && (
+            <>
+              {!collapsed && (
+                <p className="mb-2 mt-4 px-3 text-[10px] font-semibold uppercase tracking-widest text-gray-500">Admin</p>
+              )}
+              {collapsed && <div className="mx-3 my-3 border-t border-gray-700" />}
+              {ADMIN_ITEMS.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  className={({ isActive }) =>
+                    `nav-item ${isActive ? 'active' : ''} ${collapsed ? 'justify-center px-0' : ''}`
+                  }
+                  title={collapsed ? item.label : undefined}
+                >
+                  <Icon d={item.icon} />
+                  {!collapsed && <span>{item.label}</span>}
+                </NavLink>
+              ))}
+            </>
+          )}
+        </nav>
+
+        {/* User profile */}
+        <div className="border-t border-gray-800 p-3">
+          {!collapsed ? (
+            <div className="flex items-center gap-3 rounded-xl bg-white/5 px-3 py-2.5">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 text-xs font-bold text-white">
+                {user?.nom?.charAt(0)?.toUpperCase()}
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-medium text-white">{user?.nom}</p>
+                <p className="truncate text-xs text-gray-400">{user?.role === 'admin' ? 'Admin' : 'User'}</p>
+              </div>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-white/10 hover:text-white"
+                title="Deconnexion"
+              >
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+                </svg>
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="flex w-full items-center justify-center rounded-xl py-2 text-gray-400 transition-colors hover:bg-white/10 hover:text-white"
+              title="Deconnexion"
+            >
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+              </svg>
+            </button>
+          )}
+        </div>
       </aside>
-      <main className="flex-1 overflow-auto p-8">
-        <Outlet />
+
+      {/* Main content */}
+      <main className="flex-1 overflow-auto">
+        <div className="mx-auto max-w-7xl p-6 lg:p-8">
+          <Outlet />
+        </div>
+        <div id="modal-root" />
       </main>
     </div>
   );

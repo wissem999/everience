@@ -6,12 +6,12 @@ export async function getUsers() {
   return data;
 }
 
-export async function createUser(user: Omit<User, 'id'> & { password: string }) {
+export async function createUser(user: { nom: string; email: string; password: string }) {
   const { data } = await api.post<User>('/users', user);
   return data;
 }
 
-export async function updateUser(id: number, user: Omit<User, 'id'> & { password?: string }) {
+export async function updateUser(id: number, user: { nom: string; email: string; password?: string }) {
   const { data } = await api.put<User>(`/users/${id}`, user);
   return data;
 }

@@ -3,16 +3,18 @@ import bcrypt from 'bcryptjs';
 import * as model from '../models/userModel';
 import { emailExists, AuthRequest } from '../middleware/auth';
 import { ApiError } from '../middleware/error';
+import { sanitizeString } from '../utils/sanitize';
 
 const validateUser = (data: any) => {
-  const nom = String(data.nom ?? '').trim();
-  const email = String(data.email ?? '').trim().toLowerCase();
-  const role = data.role === 'admin' ? 'admin' : 'user';
+  const nom = sanitizeString(data.nom);
+  const email = sanitizeString(data.email).toLowerCase();
 
   if (!nom) throw new ApiError(400, 'Le nom est requis');
+  if (nom.length > 100) throw new ApiError(400, 'Le nom est trop long');
   if (!/^\S+@\S+\.\S+$/.test(email)) throw new ApiError(400, 'Email invalide');
+  if (email.length > 255) throw new ApiError(400, 'Email trop long');
 
-  return { nom, email, role };
+  return { nom, email };
 };
 
 export async function list(req: Request, res: Response) {
@@ -26,32 +28,35 @@ export async function getOne(req: Request, res: Response) {
 }
 
 export async function create(req: Request, res: Response) {
-  const { nom, email, role } = validateUser(req.body);
+  const { nom, email } = validateUser(req.body);
   const password = String(req.body.password ?? '');
 
-  if (password.length < 6) throw new ApiError(400, 'Le mot de passe doit contenir au moins 6 caractères');
-  if (await emailExists(email)) throw new ApiError(409, 'Cet email est déjà utilisé');
+  if (password.length < 6) throw new ApiError(400, 'Le mot de passe doit contenir au moins 6 caracteres');
+  if (password.length > 128) throw new ApiError(400, 'Le mot de passe est trop long');
+  if (await emailExists(email)) throw new ApiError(409, 'Cet email est deja utilise');
 
   const password_hash = await bcrypt.hash(password, 10);
-  const user = await model.create({ nom, email, password_hash, role });
+  const user = await model.create({ nom, email, password_hash, role: 'user' });
   res.status(201).json(user);
 }
 
-export async function update(req: Request, res: Response) {
+export async function update(req: AuthRequest, res: Response) {
   const id = Number(req.params.id);
   const existing = await model.findById(id);
   if (!existing) throw new ApiError(404, 'Utilisateur introuvable');
 
-  const { nom, email, role } = validateUser(req.body);
+  const { nom, email } = validateUser(req.body);
 
   const other = await model.findByEmail(email);
-  if (other && other.id !== id) throw new ApiError(409, 'Cet email est déjà utilisé');
+  if (other && other.id !== id) throw new ApiError(409, 'Cet email est deja utilise');
 
-  const user = await model.update(id, { nom, email, role });
+  const user = await model.update(id, { nom, email, role: existing.role });
 
   if (req.body.password) {
-    if (String(req.body.password).length < 6) throw new ApiError(400, 'Le mot de passe doit contenir au moins 6 caractères');
-    const password_hash = await bcrypt.hash(String(req.body.password), 10);
+    const pwd = String(req.body.password);
+    if (pwd.length < 6) throw new ApiError(400, 'Le mot de passe doit contenir au moins 6 caracteres');
+    if (pwd.length > 128) throw new ApiError(400, 'Le mot de passe est trop long');
+    const password_hash = await bcrypt.hash(pwd, 10);
     await model.updatePassword(id, password_hash);
   }
 
@@ -67,5 +72,5 @@ export async function remove(req: AuthRequest, res: Response) {
 
   const deleted = await model.remove(id);
   if (!deleted) throw new ApiError(404, 'Utilisateur introuvable');
-  res.json({ message: 'Utilisateur supprimé' });
+  res.json({ message: 'Utilisateur supprime' });
 }

@@ -55,7 +55,7 @@ id, nom, email (unique), password_hash, role ('admin'|'user'), created_at
 
 ### products
 id, num_article, nom, description, prix, stock, stock_min, created_at
-Computed in SQL: `valeur_stock = prix * stock`, `status = IF(stock <= stock_min, 'Besoin Activation', 'Actif')`
+Computed in SQL: `valeur_stock = prix * stock`, `status = IF(stock <= stock_min, 'Besoin Actif', 'Actif')`
 
 ### fournisseurs
 id, nom, adresse, ville, pays, telephone, mail, groupe ('privilegie'|'non'), created_at
@@ -71,7 +71,7 @@ Base URL: `http://localhost:5000/api`
 |---|---|---|
 | POST | /api/auth/login | public (rate-limited) |
 | GET/POST/PUT/DELETE | /api/users | admin |
-| GET/POST/PUT/DELETE | /api/products | admin + user |
+| GET/POST/PUT/DELETE | /api/articles | admin + user |
 | GET/POST/PUT/DELETE | /api/fournisseurs | admin + user |
 | GET/POST/PUT/DELETE | /api/clients | admin + user |
 
@@ -110,4 +110,5 @@ npm run dev          # start app on port 5173
 - [x] 2026-08-11 — Frontend: Login + Products pages (modal form, computed preview)
 - [x] 2026-08-11 — Frontend: Fournisseurs, Clients, Users (admin) pages
 - [x] 2026-08-11 — Git init + first commit
+- [x] 2026-08-11 — Rename: statut 'Besoin Activation' → 'Besoin Actif'; module Produits → Article (UI + API `/api/articles`)
 - [ ] GitHub remote + push

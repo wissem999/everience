@@ -1,9 +1,10 @@
 import { pool } from '../config/db';
+import { checkStockAlert } from '../services/emailService';
 
 const SELECT_COLUMNS = `
   id, num_article, nom, description, prix, stock, stock_min, created_at,
   (prix * stock) AS valeur_stock,
-  IF(stock <= stock_min, 'Besoin Activation', 'Actif') AS status
+  IF(stock <= stock_min, 'Besoin Actif', 'Actif') AS status
 `;
 
 export interface Product {
@@ -39,12 +40,17 @@ export async function create(data: Omit<Product, 'id'>) {
 }
 
 export async function update(id: number, data: Omit<Product, 'id'>) {
+  const [oldRows] = await pool.query('SELECT stock FROM products WHERE id = ?', [id]);
+  const old = (oldRows as { stock: number }[])[0];
   await pool.query(
     `UPDATE products
      SET num_article = ?, nom = ?, description = ?, prix = ?, stock = ?, stock_min = ?
      WHERE id = ?`,
     [data.num_article, data.nom, data.description ?? null, data.prix, data.stock, data.stock_min, id]
   );
+  if (old && data.stock < old.stock) {
+    void checkStockAlert(id, old.stock, data.stock);
+  }
   return findById(id);
 }
 

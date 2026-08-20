@@ -11,12 +11,10 @@ export const pool = mysql.createPool({
   database: process.env.DB_NAME || 'everience',
   waitForConnections: true,
   connectionLimit: 10,
-  namedPlaceholders: true,
 });
 
 export async function testDbConnection() {
-  const connection = await pool.getConnection();
-  await connection.ping();
-  connection.release();
+  const conn = await pool.getConnection();
   console.log('[db] Connected to MySQL database:', process.env.DB_NAME);
+  conn.release();
 }

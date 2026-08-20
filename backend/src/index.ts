@@ -1,11 +1,17 @@
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes';
 import userRoutes from './routes/userRoutes';
 import productRoutes from './routes/productRoutes';
 import fournisseurRoutes from './routes/fournisseurRoutes';
 import clientRoutes from './routes/clientRoutes';
+import bookingRoutes from './routes/bookingRoutes';
+import commandeRoutes from './routes/commandeRoutes';
+import settingsRoutes from './routes/settingsRoutes';
+import packRoutes from './routes/packRoutes';
 import { errorHandler, notFound } from './middleware/error';
 import { testDbConnection } from './config/db';
 
@@ -13,18 +19,40 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors());
-app.use(express.json());
+app.use(helmet());
 
-app.get('/', (req, res) => {
+const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+app.use(cors({
+  origin: [frontendUrl, 'http://localhost:5173'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+}));
+
+app.use(express.json({ limit: '1mb' }));
+
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 200,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: 'Trop de requetes. Reessayez plus tard.' },
+});
+app.use(globalLimiter);
+
+app.get('/', (_req, res) => {
   res.json({ message: 'Everience API', version: '1.0.0' });
 });
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
-app.use('/api/products', productRoutes);
+app.use('/api/articles', productRoutes);
 app.use('/api/fournisseurs', fournisseurRoutes);
 app.use('/api/clients', clientRoutes);
+app.use('/api/bookings', bookingRoutes);
+app.use('/api/commandes', commandeRoutes);
+app.use('/api/settings', settingsRoutes);
+app.use('/api/packs', packRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

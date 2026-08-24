@@ -10,6 +10,7 @@ import { Bookings } from './pages/Bookings';
 import { Commandes } from './pages/Commandes';
 import { Settings } from './pages/Settings';
 import { Packs } from './pages/Packs';
+import { Inventaire } from './pages/Inventaire';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path="/articles" element={<Articles />} />
         <Route path="/bookings" element={<Bookings />} />
         <Route path="/packs" element={<Packs />} />
+        <Route path="/inventaire" element={<Inventaire />} />
         <Route path="/commandes" element={<Commandes />} />
         <Route path="/fournisseurs" element={<Fournisseurs />} />
         <Route path="/clients" element={<Clients />} />

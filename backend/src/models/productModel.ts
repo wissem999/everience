@@ -2,7 +2,7 @@ import { pool } from '../config/db';
 import { checkStockAlert } from '../services/emailService';
 
 const SELECT_COLUMNS = `
-  id, num_article, nom, description, prix, stock, stock_min, created_at,
+  id, num_article, nom, description, type, prix, stock, stock_min, created_at,
   (prix * stock) AS valeur_stock,
   IF(stock <= stock_min, 'Besoin Actif', 'Actif') AS status
 `;
@@ -12,6 +12,7 @@ export interface Product {
   num_article: string;
   nom: string;
   description?: string;
+  type?: string;
   prix: number;
   stock: number;
   stock_min: number;
@@ -31,9 +32,9 @@ export async function findById(id: number) {
 
 export async function create(data: Omit<Product, 'id'>) {
   const [result] = await pool.query(
-    `INSERT INTO products (num_article, nom, description, prix, stock, stock_min)
-     VALUES (?, ?, ?, ?, ?, ?)`,
-    [data.num_article, data.nom, data.description ?? null, data.prix, data.stock, data.stock_min]
+    `INSERT INTO products (num_article, nom, description, type, prix, stock, stock_min)
+     VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    [data.num_article, data.nom, data.description ?? null, data.type ?? null, data.prix, data.stock, data.stock_min]
   );
   const id = (result as { insertId: number }).insertId;
   return findById(id);
@@ -44,9 +45,9 @@ export async function update(id: number, data: Omit<Product, 'id'>) {
   const old = (oldRows as { stock: number }[])[0];
   await pool.query(
     `UPDATE products
-     SET num_article = ?, nom = ?, description = ?, prix = ?, stock = ?, stock_min = ?
+     SET num_article = ?, nom = ?, description = ?, type = ?, prix = ?, stock = ?, stock_min = ?
      WHERE id = ?`,
-    [data.num_article, data.nom, data.description ?? null, data.prix, data.stock, data.stock_min, id]
+    [data.num_article, data.nom, data.description ?? null, data.type ?? null, data.prix, data.stock, data.stock_min, id]
   );
   if (old && data.stock < old.stock) {
     void checkStockAlert(id, old.stock, data.stock);

@@ -1,5 +1,5 @@
 ﻿import { useEffect, useMemo, useState } from 'react';
-import type { Booking, BookingType, StockSummary, Pack } from '../types';
+import type { Booking, BookingType, StockSummary, Pack, Product } from '../types';
 import { createBooking, deleteBooking, getBookings, getStockSummary, updateBooking } from '../api/bookings';
 import { getClients } from '../api/clients';
 import { getFournisseurs } from '../api/fournisseurs';
@@ -8,6 +8,8 @@ import { getPacks } from '../api/packs';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { Modal } from '../components/Modal';
 import type { BookingFilters } from '../types';
+import { Search } from 'lucide-react';
+import { Pagination, usePagination } from '../components/Pagination';
 
 interface FormState {
   type: BookingType;
@@ -76,6 +78,7 @@ export function Bookings() {
   const [original, setOriginal] = useState<FormState | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Booking | null>(null);
 
+  const [textSearch, setTextSearch] = useState('');
   const [filters, setFilters] = useState<BookingFilters>({ type: 'all' });
   const [stockSummary, setStockSummary] = useState<StockSummary[]>([]);
   const [showStockSummary, setShowStockSummary] = useState(false);
@@ -132,6 +135,19 @@ export function Bookings() {
   useEffect(() => {
     if (showStockSummary) loadStockSummary();
   }, [showStockSummary]);
+
+  const ts = textSearch.toLowerCase();
+  const filteredBookings = ts
+    ? bookings.filter(
+        (b) =>
+          (b.nr_facture ?? '').toLowerCase().includes(ts) ||
+          (b.client_nom ?? '').toLowerCase().includes(ts) ||
+          (b.fournisseur_nom ?? '').toLowerCase().includes(ts) ||
+          (b.article_nom ?? '').toLowerCase().includes(ts)
+      )
+    : bookings;
+
+  const { page, pageSize, totalPages, paged, setPage, setPageSize, total } = usePagination(filteredBookings);
 
   const openCreate = () => {
     setEditing(null);
@@ -494,6 +510,16 @@ export function Bookings() {
 
       {/* Filter Bar */}
       <div className="animate-fade-in-up rounded-2xl border border-gray-200 bg-white p-4 shadow-sm" style={{ animationDelay: '0.1s' }}>
+        <div className="relative max-w-sm mb-3">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Rechercher (facture, client, article...)"
+            value={textSearch}
+            onChange={(e) => setTextSearch(e.target.value)}
+            className="w-full rounded-xl border border-gray-200 bg-gray-50 py-2.5 pl-10 pr-4 text-sm transition-colors focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+          />
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3 items-end">
           <div>
             <label className="mb-1 block text-xs font-medium text-gray-500">Type</label>
@@ -610,7 +636,7 @@ export function Bookings() {
                     </div>
                   </td>
                 </tr>
-              ) : bookings.length === 0 ? (
+              ) : filteredBookings.length === 0 ? (
                 <tr>
                   <td colSpan={9} className="px-4 py-12 text-center text-gray-500">
                     <div className="flex flex-col items-center gap-3">
@@ -624,7 +650,7 @@ export function Bookings() {
                   </td>
                 </tr>
               ) : (
-                bookings.map((b) => (
+                paged.map((b) => (
                   <tr key={b.id} className="border-b border-gray-100 hover:bg-gray-50/50">
                     <td className="px-4 py-3">
                       <span className={`inline-flex rounded-full px-3 py-1 text-xs font-medium shadow-sm ${TYPE_COLORS[b.type]}`}>
@@ -673,7 +699,7 @@ export function Bookings() {
                 Chargement...
               </div>
             </div>
-          ) : bookings.length === 0 ? (
+          ) : filteredBookings.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12">
               <div className="rounded-full bg-gray-100 p-4 mb-3">
                 <svg className="h-8 w-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -684,7 +710,7 @@ export function Bookings() {
             </div>
           ) : (
             <div className="divide-y divide-gray-100">
-              {bookings.map((b) => (
+              {paged.map((b) => (
                 <div key={b.id} className="p-4 space-y-2">
                   <div className="flex items-start justify-between gap-2">
                     <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium shadow-sm ${TYPE_COLORS[b.type]}`}>
@@ -749,6 +775,12 @@ export function Bookings() {
           )}
         </div>
       </div>
+
+      {filteredBookings.length > 0 && (
+        <div className="rounded-2xl border border-gray-200 bg-white shadow-sm">
+          <Pagination page={page} totalPages={totalPages} pageSize={pageSize} total={total} onPageChange={setPage} onPageSizeChange={setPageSize} />
+        </div>
+      )}
 
       {/* Modal */}
       <Modal
@@ -981,7 +1013,10 @@ export function Bookings() {
                 <select
                   className={fieldClass(invalidFields.includes('article_id'))}
                   value={form.article_id}
-                  onChange={(e) => { touch('article_id'); setForm({ ...form, article_id: e.target.value }); }}
+                  onChange={(e) => {
+                    touch('article_id');
+                    setForm({ ...form, article_id: e.target.value });
+                  }}
                 >
                   <option value="">-- Selectionner un article --</option>
                   {articles.map((a) => (

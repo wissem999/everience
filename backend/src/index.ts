@@ -12,6 +12,7 @@ import bookingRoutes from './routes/bookingRoutes';
 import commandeRoutes from './routes/commandeRoutes';
 import settingsRoutes from './routes/settingsRoutes';
 import packRoutes from './routes/packRoutes';
+import inventaireRoutes from './routes/inventaireRoutes';
 import { errorHandler, notFound } from './middleware/error';
 import { testDbConnection } from './config/db';
 
@@ -53,6 +54,7 @@ app.use('/api/bookings', bookingRoutes);
 app.use('/api/commandes', commandeRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/packs', packRoutes);
+app.use('/api/inventaire', inventaireRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

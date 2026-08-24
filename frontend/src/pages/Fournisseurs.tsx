@@ -9,7 +9,8 @@ import {
   updateFournisseur,
 } from '../api/fournisseurs';
 import type { Fournisseur } from '../types';
-import { Truck, Plus, Star, Building2, Pencil, Trash2, PackageOpen } from 'lucide-react';
+import { Truck, Plus, Star, Building2, Pencil, Trash2, PackageOpen, Search } from 'lucide-react';
+import { Pagination, usePagination } from '../components/Pagination';
 
 interface FormState {
   nom: string;
@@ -42,6 +43,9 @@ export function Fournisseurs() {
   const [invalidFields, setInvalidFields] = useState<string[]>([]);
   const [original, setOriginal] = useState<FormState | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Fournisseur | null>(null);
+  const [search, setSearch] = useState('');
+  const [paysFilter, setPaysFilter] = useState('');
+  const [groupeFilter, setGroupeFilter] = useState('');
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -57,6 +61,17 @@ export function Fournisseurs() {
   useEffect(() => {
     load();
   }, [load]);
+
+  const q = search.toLowerCase();
+  const uniquePays = [...new Set(rows.map((f) => f.pays).filter(Boolean))].sort();
+  const filtered = rows.filter((f) => {
+    if (q && !f.nom.toLowerCase().includes(q) && !(f.ville ?? '').toLowerCase().includes(q) && !(f.pays ?? '').toLowerCase().includes(q) && !(f.mail ?? '').toLowerCase().includes(q) && !(f.telephone ?? '').includes(q)) return false;
+    if (paysFilter && f.pays !== paysFilter) return false;
+    if (groupeFilter && f.groupe !== groupeFilter) return false;
+    return true;
+  });
+
+  const { page, pageSize, totalPages, paged, setPage, setPageSize, total } = usePagination(filtered);
 
   const openCreate = () => {
     setEditing(null);
@@ -205,6 +220,39 @@ export function Fournisseurs() {
         </div>
       )}
 
+      {/* Search & Filters */}
+      <div className="flex flex-col sm:flex-row gap-3">
+        <div className="relative flex-1 max-w-sm">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Rechercher un fournisseur..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full rounded-xl border border-gray-200 bg-gray-50 py-2.5 pl-10 pr-4 text-sm transition-colors focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+          />
+        </div>
+        <select
+          value={paysFilter}
+          onChange={(e) => setPaysFilter(e.target.value)}
+          className="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm transition-colors focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+        >
+          <option value="">Tous les pays</option>
+          {uniquePays.map((p) => (
+            <option key={p} value={p}>{p}</option>
+          ))}
+        </select>
+        <select
+          value={groupeFilter}
+          onChange={(e) => setGroupeFilter(e.target.value)}
+          className="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm transition-colors focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+        >
+          <option value="">Tous les groupes</option>
+          <option value="privilegie">Privilegie</option>
+          <option value="non">Non privilegie</option>
+        </select>
+      </div>
+
       {/* Table */}
       {loading ? (
         <div className="flex items-center justify-center py-20">
@@ -228,7 +276,7 @@ export function Fournisseurs() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {rows.map((f) => (
+                {paged.map((f) => (
                   <tr key={f.id} className="transition-colors hover:bg-gray-50">
                     <td className="cell-wrap px-6 py-4 text-sm font-medium text-gray-900">{f.nom}</td>
                     <td className="cell-wrap px-6 py-4 text-sm text-gray-600">{f.ville ?? '—'}</td>
@@ -272,7 +320,7 @@ export function Fournisseurs() {
 
           {/* Mobile Cards */}
           <div className="md:hidden">
-            {rows.map((f) => (
+            {paged.map((f) => (
               <div key={f.id} className="border-b border-gray-100 p-4 last:border-b-0">
                 <div className="mb-2 flex items-start justify-between gap-2">
                   <h3 className="text-sm font-semibold text-gray-900" title={f.nom}>{f.nom}</h3>
@@ -324,6 +372,9 @@ export function Fournisseurs() {
               <p className="mt-4 text-sm font-medium text-gray-500">Aucun fournisseur pour le moment</p>
               <p className="mt-1 text-xs text-gray-400">Créez votre premier fournisseur pour commencer</p>
             </div>
+          )}
+          {filtered.length > 0 && (
+            <Pagination page={page} totalPages={totalPages} pageSize={pageSize} total={total} onPageChange={setPage} onPageSizeChange={setPageSize} />
           )}
         </div>
       )}

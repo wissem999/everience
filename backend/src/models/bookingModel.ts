@@ -203,16 +203,17 @@ export async function create(data: BookingData) {
         data.date,
       ]
     );
+    const bookingId = (result as { insertId: number }).insertId;
     const delta = computeDelta(data.type, data.nombre, data.retour_condition);
     const after = article.stock + delta;
     if (delta !== 0) {
       await conn.query('UPDATE products SET stock = stock + ? WHERE id = ?', [delta, data.article_id]);
     }
+
     await conn.commit();
     void checkStockAlert(data.article_id, article.stock, after);
 
-    const id = (result as { insertId: number }).insertId;
-    return findById(id);
+    return findById(bookingId);
   } catch (err) {
     await conn.rollback();
     throw err;

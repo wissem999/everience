@@ -3,15 +3,17 @@ import { Modal } from '../components/Modal';
 import { StatusBadge } from '../components/StatusBadge';
 import { TextArea, TextInput } from '../components/FormField';
 import { ConfirmDialog } from '../components/ConfirmDialog';
+import { Pagination, usePagination } from '../components/Pagination';
 import { createProduct, deleteProduct, getProducts, updateProduct } from '../api/articles';
 import type { Product } from '../types';
 import { cn } from '../lib/utils';
-import { Plus, Package, TrendingUp, AlertTriangle, PackageOpen, Pencil, Trash2, X } from 'lucide-react';
+import { Plus, Package, TrendingUp, AlertTriangle, PackageOpen, Pencil, Trash2, X, Search } from 'lucide-react';
 
 interface FormState {
   num_article: string;
   nom: string;
   description: string;
+  type: string;
   prix: string;
   stock: string;
   stock_min: string;
@@ -21,6 +23,7 @@ const emptyForm: FormState = {
   num_article: '',
   nom: '',
   description: '',
+  type: '',
   prix: '',
   stock: '',
   stock_min: '',
@@ -37,6 +40,8 @@ export function Articles() {
   const [invalidFields, setInvalidFields] = useState<string[]>([]);
   const [original, setOriginal] = useState<FormState | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Product | null>(null);
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -53,6 +58,15 @@ export function Articles() {
     load();
   }, [load]);
 
+  const q = search.toLowerCase();
+  const filteredProducts = products.filter((p) => {
+    if (q && !p.num_article.toLowerCase().includes(q) && !p.nom.toLowerCase().includes(q) && !(p.description ?? '').toLowerCase().includes(q)) return false;
+    if (statusFilter && p.status !== statusFilter) return false;
+    return true;
+  });
+
+  const { page, pageSize, totalPages, paged, setPage, setPageSize, total } = usePagination(filteredProducts);
+
   const openCreate = () => {
     setEditing(null);
     setForm(emptyForm);
@@ -68,6 +82,7 @@ export function Articles() {
       num_article: product.num_article,
       nom: product.nom,
       description: product.description ?? '',
+      type: product.type ?? '',
       prix: String(product.prix),
       stock: String(product.stock),
       stock_min: String(product.stock_min),
@@ -113,6 +128,7 @@ export function Articles() {
       num_article: form.num_article.trim(),
       nom: form.nom.trim(),
       description: form.description,
+      type: form.type || undefined,
       prix: Number(form.prix),
       stock: Number(form.stock),
       stock_min: Number(form.stock_min),
@@ -226,6 +242,29 @@ export function Articles() {
         </div>
       )}
 
+      {/* Search & Filters */}
+      <div className="flex flex-col sm:flex-row gap-3">
+        <div className="relative flex-1 max-w-sm">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Rechercher un article..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full rounded-xl border border-gray-200 bg-gray-50 py-2.5 pl-10 pr-4 text-sm transition-colors focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+          />
+        </div>
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+          className="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm transition-colors focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+        >
+          <option value="">Tous les statuts</option>
+          <option value="Actif">Actif</option>
+          <option value="Besoin Actif">Besoin Actif</option>
+        </select>
+      </div>
+
       {loading ? (
         <div className="flex items-center justify-center py-20">
           <div className="flex items-center gap-3 text-sm text-gray-500">
@@ -242,6 +281,7 @@ export function Articles() {
                 <tr className="text-left text-xs font-medium text-gray-500 uppercase">
                   <th className="px-5 py-3.5">N Article</th>
                   <th className="px-5 py-3.5">Nom</th>
+                  <th className="px-5 py-3.5">Type</th>
                   <th className="px-5 py-3.5">Description</th>
                   <th className="px-5 py-3.5">Prix</th>
                   <th className="px-5 py-3.5">Stock</th>
@@ -252,10 +292,11 @@ export function Articles() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {products.map((p, i) => (
+                {paged.map((p, i) => (
                   <tr key={p.id} className={cn('hover:bg-gray-50/80 transition-colors', i % 2 === 0 ? 'bg-white' : 'bg-gray-50/30')}>
                     <td className="px-5 py-3.5 font-mono text-gray-600">{p.num_article}</td>
                     <td className="px-5 py-3.5 font-medium text-gray-800 cell-wrap">{p.nom}</td>
+                    <td className="px-5 py-3.5 text-gray-600 cell-wrap">{p.type || '—'}</td>
                     <td className="px-5 py-3.5 text-gray-500 cell-wrap">{p.description || '—'}</td>
                     <td className="px-5 py-3.5">{Number(p.prix).toFixed(2)} TND</td>
                     <td className="px-5 py-3.5">{p.stock}</td>
@@ -290,7 +331,7 @@ export function Articles() {
 
           {/* Mobile card view */}
           <div className="md:hidden divide-y divide-gray-100">
-            {products.length === 0 ? (
+            {filteredProducts.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-16 animate-fade-in">
                 <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-100">
                   <PackageOpen className="h-8 w-8 text-gray-400" />
@@ -299,12 +340,13 @@ export function Articles() {
                 <p className="mt-1 text-sm text-gray-400">Commencez par ajouter votre premier article</p>
               </div>
             ) : (
-              products.map((p) => (
+              paged.map((p) => (
                 <div key={p.id} className="p-4 space-y-3">
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
                       <p className="font-medium text-gray-900 cell-wrap">{p.nom}</p>
                       <p className="text-xs text-gray-500 font-mono">{p.num_article}</p>
+                      {p.type && <p className="text-xs text-gray-400 mt-0.5">{p.type}</p>}
                     </div>
                     <StatusBadge status={p.status} />
                   </div>
@@ -357,6 +399,9 @@ export function Articles() {
               <p className="mt-1 text-sm text-gray-400">Commencez par ajouter votre premier article</p>
             </div>
           )}
+          {filteredProducts.length > 0 && (
+            <Pagination page={page} totalPages={totalPages} pageSize={pageSize} total={total} onPageChange={setPage} onPageSizeChange={setPageSize} />
+          )}
         </div>
       )}
 
@@ -388,6 +433,15 @@ export function Articles() {
               value={form.description}
               onChange={(e) => set('description')(e.target.value)}
             />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <TextInput
+                label="Type"
+                value={form.type}
+                onChange={(e) => set('type')(e.target.value)}
+                placeholder="Ex: Materiel, Fourniture..."
+              />
+              <div></div>
+            </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <TextInput
                 label="Prix (TND)"

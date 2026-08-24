@@ -4,7 +4,8 @@ import { TextInput } from '../components/FormField';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { createClient, deleteClient, getClients, updateClient } from '../api/clients';
 import type { Client } from '../types';
-import { Users, Plus, Pencil, Trash2, PackageOpen } from 'lucide-react';
+import { Users, Plus, Pencil, Trash2, PackageOpen, Search } from 'lucide-react';
+import { Pagination, usePagination } from '../components/Pagination';
 
 interface FormState {
   nom: string;
@@ -28,6 +29,8 @@ export function Clients() {
   const [invalidFields, setInvalidFields] = useState<string[]>([]);
   const [original, setOriginal] = useState<FormState | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Client | null>(null);
+  const [search, setSearch] = useState('');
+  const [paysFilter, setPaysFilter] = useState('');
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -43,6 +46,16 @@ export function Clients() {
   useEffect(() => {
     load();
   }, [load]);
+
+  const q = search.toLowerCase();
+  const uniquePays = [...new Set(rows.map((c) => c.pays).filter(Boolean))].sort();
+  const filtered = rows.filter((c) => {
+    if (q && !c.nom.toLowerCase().includes(q) && !(c.ville ?? '').toLowerCase().includes(q) && !(c.pays ?? '').toLowerCase().includes(q) && !(c.mail ?? '').toLowerCase().includes(q) && !(c.telephone ?? '').includes(q)) return false;
+    if (paysFilter && c.pays !== paysFilter) return false;
+    return true;
+  });
+
+  const { page, pageSize, totalPages, paged, setPage, setPageSize, total } = usePagination(filtered);
 
   const openCreate = () => {
     setEditing(null);
@@ -165,6 +178,30 @@ export function Clients() {
         </div>
       )}
 
+      {/* Search & Filters */}
+      <div className="flex flex-col sm:flex-row gap-3">
+        <div className="relative flex-1 max-w-sm">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Rechercher un client..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full rounded-xl border border-gray-200 bg-gray-50 py-2.5 pl-10 pr-4 text-sm transition-colors focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+          />
+        </div>
+        <select
+          value={paysFilter}
+          onChange={(e) => setPaysFilter(e.target.value)}
+          className="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm transition-colors focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+        >
+          <option value="">Tous les pays</option>
+          {uniquePays.map((p) => (
+            <option key={p} value={p}>{p}</option>
+          ))}
+        </select>
+      </div>
+
       {/* Table */}
       {loading ? (
         <div className="flex items-center justify-center py-20">
@@ -187,7 +224,7 @@ export function Clients() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {rows.map((c) => (
+                {paged.map((c) => (
                   <tr key={c.id} className="transition-colors hover:bg-gray-50">
                     <td className="cell-wrap px-6 py-4 text-sm font-medium text-gray-900">{c.nom}</td>
                     <td className="cell-wrap px-6 py-4 text-sm text-gray-600">{c.ville ?? '\u2014'}</td>
@@ -220,7 +257,7 @@ export function Clients() {
 
           {/* Mobile Cards */}
           <div className="md:hidden divide-y divide-gray-100">
-            {rows.map((c) => (
+            {paged.map((c) => (
               <div key={c.id} className="p-4 space-y-3">
                 <div className="flex items-start justify-between gap-2">
                   <p className="text-sm font-semibold text-gray-900 min-w-0 cell-wrap">{c.nom}</p>
@@ -276,6 +313,9 @@ export function Clients() {
               <p className="mt-4 text-sm font-medium text-gray-500">Aucun client pour le moment</p>
               <p className="mt-1 text-xs text-gray-400">Creez votre premier client pour commencer</p>
             </div>
+          )}
+          {filtered.length > 0 && (
+            <Pagination page={page} totalPages={totalPages} pageSize={pageSize} total={total} onPageChange={setPage} onPageSizeChange={setPageSize} />
           )}
         </div>
       )}

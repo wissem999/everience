@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
-import { Users as UsersIcon, UserPlus, Pencil, Trash2, Shield, User, Inbox } from 'lucide-react';
+import { Users as UsersIcon, UserPlus, Pencil, Trash2, Shield, User, Inbox, Search } from 'lucide-react';
+import { Pagination, usePagination } from '../components/Pagination';
 import { Modal } from '../components/Modal';
 import { TextInput } from '../components/FormField';
 import { ConfirmDialog } from '../components/ConfirmDialog';
@@ -25,6 +26,8 @@ export function Users() {
   const [invalidFields, setInvalidFields] = useState<string[]>([]);
   const [original, setOriginal] = useState<FormState | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<UserType | null>(null);
+  const [search, setSearch] = useState('');
+  const [roleFilter, setRoleFilter] = useState('');
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -40,6 +43,15 @@ export function Users() {
   useEffect(() => {
     load();
   }, [load]);
+
+  const q = search.toLowerCase();
+  const filtered = rows.filter((u) => {
+    if (q && !u.nom.toLowerCase().includes(q) && !u.email.toLowerCase().includes(q)) return false;
+    if (roleFilter && u.role !== roleFilter) return false;
+    return true;
+  });
+
+  const { page, pageSize, totalPages, paged, setPage, setPageSize, total } = usePagination(filtered);
 
   const openCreate = () => {
     setEditing(null);
@@ -174,6 +186,29 @@ export function Users() {
         </div>
       )}
 
+      {/* Search & Filters */}
+      <div className="flex flex-col sm:flex-row gap-3">
+        <div className="relative flex-1 max-w-sm">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Rechercher un utilisateur..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full rounded-xl border border-gray-200 bg-gray-50 py-2.5 pl-10 pr-4 text-sm transition-colors focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+          />
+        </div>
+        <select
+          value={roleFilter}
+          onChange={(e) => setRoleFilter(e.target.value)}
+          className="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm transition-colors focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+        >
+          <option value="">Tous les roles</option>
+          <option value="admin">Admin</option>
+          <option value="user">Utilisateur</option>
+        </select>
+      </div>
+
       {/* Table / Cards */}
       {loading ? (
         <div className="flex items-center gap-3 rounded-2xl border border-gray-200 bg-white px-6 py-12 shadow-sm animate-fade-in">
@@ -206,7 +241,7 @@ export function Users() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {rows.map((u, i) => (
+                {paged.map((u, i) => (
                   <tr
                     key={u.id}
                     className="animate-fade-in-up transition-colors hover:bg-gray-50/50"
@@ -264,7 +299,7 @@ export function Users() {
 
           {/* Mobile card view */}
           <div className="md:hidden divide-y divide-gray-100">
-            {rows.map((u, i) => (
+            {paged.map((u, i) => (
               <div
                 key={u.id}
                 className="px-4 py-4 space-y-3 animate-fade-in-up"
@@ -313,6 +348,9 @@ export function Users() {
               </div>
             ))}
           </div>
+          {filtered.length > 0 && (
+            <Pagination page={page} totalPages={totalPages} pageSize={pageSize} total={total} onPageChange={setPage} onPageSizeChange={setPageSize} />
+          )}
         </div>
       )}
 

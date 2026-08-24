@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { Search } from 'lucide-react';
+import { Pagination, usePagination } from '../components/Pagination';
 import type { Commande } from '../api/commandes';
 import {
   approuverCommande,
@@ -55,6 +57,112 @@ const STATUT_BADGE: Record<Commande['statut'], { label: string; cls: string }> =
   refuse: { label: 'Refusé', cls: 'bg-red-100 text-red-700' },
 };
 
+function CommandeWorkflow({ commande }: { commande: Commande }) {
+  const hasNombre = (commande.nombre ?? 0) > 0;
+  const hasPrix = (commande.prix_unitaire ?? 0) > 0;
+  const isSoumis = commande.statut === 'soumis';
+  const isApprouve = commande.statut === 'approuve';
+  const isRefuse = commande.statut === 'refuse';
+
+  const steps = [
+    { key: 'demande', label: 'Demande', sub: 'Créée', done: true },
+    { key: 'details', label: 'Détails', sub: `${commande.nombre ?? 0} unités`, done: hasNombre },
+    { key: 'devis_demande', label: 'Devis demandé', sub: commande.fournisseur ?? '', done: isSoumis || isApprouve || isRefuse || hasPrix },
+    { key: 'devis_recu', label: 'Devis reçu', sub: hasPrix ? `${Number(commande.prix_unitaire).toFixed(2)} TND` : 'En attente', done: isSoumis || isApprouve || isRefuse || hasPrix },
+    { key: 'envoye_admin', label: 'Envoyé admin', sub: 'Pour approbation', done: isSoumis || isApprouve || isRefuse },
+    { key: 'decision', label: isRefuse ? 'Refusé' : 'Approuvé', sub: isRefuse ? 'Demande refusée' : isApprouve ? 'Devis accepté' : 'En attente', done: isApprouve || isRefuse, isReject: isRefuse },
+    { key: 'finance', label: 'Finance', sub: isApprouve ? 'Notifié' : 'En attente', done: isApprouve },
+  ];
+
+  const activeIdx = isRefuse ? 5 : isApprouve ? 6 : isSoumis ? 4 : hasPrix ? 3 : hasNombre ? 2 : 1;
+
+  const stepColor = (i: number, s: typeof steps[0]) => {
+    if ((s as any).isReject) return { bg: 'bg-red-500', ring: 'ring-red-200', line: 'bg-red-400', icon: 'text-white', label: 'text-red-700', sub: 'text-red-400' };
+    if (i < activeIdx) return { bg: 'bg-emerald-500', ring: 'ring-emerald-200', line: 'bg-emerald-400', icon: 'text-white', label: 'text-emerald-700', sub: 'text-emerald-400' };
+    if (i === activeIdx) return { bg: 'bg-blue-600', ring: 'ring-blue-200', line: 'bg-gray-200', icon: 'text-white', label: 'text-blue-700', sub: 'text-blue-400' };
+    return { bg: 'bg-gray-200', ring: 'ring-gray-100', line: 'bg-gray-200', icon: 'text-gray-400', label: 'text-gray-400', sub: 'text-gray-300' };
+  };
+
+  return (
+    <div className="rounded-2xl border border-gray-200 bg-white p-4 sm:p-6 shadow-sm">
+      <div className="flex items-center gap-3 mb-5">
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100">
+          <svg className="h-4 w-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        </div>
+        <div>
+          <h3 className="text-sm font-semibold text-gray-900">Workflow commande</h3>
+          <p className="text-xs text-gray-500">{commande.nr_commande} — {commande.article_nom}</p>
+        </div>
+      </div>
+
+      {/* Desktop: horizontal */}
+      <div className="hidden md:flex items-start justify-between gap-1">
+        {steps.map((s, i) => {
+          const c = stepColor(i, s);
+          const isActive = i === activeIdx;
+          return (
+            <div key={s.key} className="flex items-center flex-1 last:flex-none">
+              <div className="flex flex-col items-center text-center flex-1 min-w-0">
+                <div className={`relative flex h-10 w-10 items-center justify-center rounded-full ${c.bg} ring-4 ${c.ring} transition-all duration-500 ${isActive ? 'scale-110 shadow-lg' : ''}`}>
+                  {i < activeIdx ? (
+                    <svg className={`h-5 w-5 ${c.icon}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  ) : (
+                    <span className={`text-xs font-bold ${c.icon}`}>{i + 1}</span>
+                  )}
+                  {i === activeIdx && (
+                    <span className="absolute -top-0.5 -right-0.5 flex h-3 w-3">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75" />
+                      <span className="relative inline-flex rounded-full h-3 w-3 bg-white border-2 border-blue-600" />
+                    </span>
+                  )}
+                </div>
+                <p className={`mt-2 text-xs font-medium ${c.label} ${isActive ? 'font-semibold' : ''}`}>{s.label}</p>
+                <p className={`text-[10px] ${c.sub} mt-0.5 max-w-[80px] truncate`}>{s.sub}</p>
+              </div>
+              {i < steps.length - 1 && (
+                <div className={`h-0.5 w-6 flex-shrink-0 rounded-full mt-[-28px] transition-colors duration-500 ${i < activeIdx ? c.line : 'bg-gray-200'}`} />
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Mobile: vertical */}
+      <div className="md:hidden space-y-0">
+        {steps.map((s, i) => {
+          const c = stepColor(i, s);
+          const isActive = i === activeIdx;
+          const isLast = i === steps.length - 1;
+          return (
+            <div key={s.key} className="flex gap-3">
+              <div className="flex flex-col items-center">
+                <div className={`flex h-8 w-8 items-center justify-center rounded-full ${c.bg} ring-3 ${c.ring} transition-all duration-500 ${isActive ? 'scale-110 shadow-lg' : ''}`}>
+                  {i < activeIdx ? (
+                    <svg className={`h-4 w-4 ${c.icon}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  ) : (
+                    <span className={`text-[10px] font-bold ${c.icon}`}>{i + 1}</span>
+                  )}
+                </div>
+                {!isLast && <div className={`w-0.5 h-6 ${i < activeIdx ? c.line : 'bg-gray-200'} transition-colors duration-500`} />}
+              </div>
+              <div className={`pb-4 ${!isLast ? '' : ''}`}>
+                <p className={`text-sm font-medium ${c.label} ${isActive ? 'font-semibold' : ''}`}>{s.label}</p>
+                <p className={`text-xs ${c.sub}`}>{s.sub}</p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export function Commandes() {
   const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -97,6 +205,25 @@ export function Commandes() {
   useEffect(() => {
     load();
   }, []);
+
+  const [search, setSearch] = useState('');
+  const [statutFilter, setStatutFilter] = useState('');
+  const q = search.toLowerCase();
+  const filtered = commandes.filter((c) => {
+    if (q && !c.nr_commande.toLowerCase().includes(q) && !(c.article_nom ?? '').toLowerCase().includes(q) && !(c.fournisseur ?? '').toLowerCase().includes(q) && !(c.nr_article ?? '').toLowerCase().includes(q)) return false;
+    if (statutFilter && c.statut !== statutFilter) return false;
+    return true;
+  });
+
+  const { page, pageSize, totalPages, paged, setPage, setPageSize, total } = usePagination(filtered);
+
+  const latestCommande = commandes.length > 0
+    ? [...commandes].sort((a, b) => {
+        const da = a.created_at ?? a.date ?? '';
+        const db = b.created_at ?? b.date ?? '';
+        return db.localeCompare(da);
+      })[0]
+    : null;
 
   const autoOpenDone = useRef(false);
 
@@ -280,6 +407,9 @@ export function Commandes() {
         </div>
       </div>
 
+      {/* Workflow for latest commande */}
+      {!loading && latestCommande && <CommandeWorkflow commande={latestCommande} />}
+
       {/* Error banner */}
       {error && (
         <div className="flex items-center gap-3 rounded-2xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700 animate-fade-in">
@@ -299,6 +429,31 @@ export function Commandes() {
           <span className="break-words">{info}</span>
         </div>
       )}
+
+      {/* Search & Filters */}
+      <div className="flex flex-col sm:flex-row gap-3">
+        <div className="relative flex-1 max-w-sm">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Rechercher une commande..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full rounded-xl border border-gray-200 bg-gray-50 py-2.5 pl-10 pr-4 text-sm transition-colors focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+          />
+        </div>
+        <select
+          value={statutFilter}
+          onChange={(e) => setStatutFilter(e.target.value)}
+          className="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2.5 text-sm transition-colors focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+        >
+          <option value="">Tous les statuts</option>
+          <option value="en_attente">Devis en attente</option>
+          <option value="soumis">Envoye a l'admin</option>
+          <option value="approuve">Approuve</option>
+          <option value="refuse">Refuse</option>
+        </select>
+      </div>
 
       {/* Table */}
       <div className="rounded-2xl border border-gray-200 bg-white shadow-sm">
@@ -333,7 +488,7 @@ export function Commandes() {
                     </div>
                   </td>
                 </tr>
-              ) : commandes.length === 0 ? (
+              ) : filtered.length === 0 ? (
                 <tr>
                   <td colSpan={11}>
                     <div className="text-center py-12">
@@ -345,7 +500,7 @@ export function Commandes() {
                   </td>
                 </tr>
               ) : (
-                commandes.map((c, idx) => {
+                paged.map((c, idx) => {
                   const badge = STATUT_BADGE[c.statut];
                   return (
                     <tr
@@ -474,7 +629,7 @@ export function Commandes() {
                 Chargement...
               </div>
             </div>
-          ) : commandes.length === 0 ? (
+          ) : filtered.length === 0 ? (
             <div className="text-center py-12">
               <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m3.75 9v6m3-3H9m1.5-12H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
@@ -482,7 +637,7 @@ export function Commandes() {
               <p className="mt-3 text-gray-400 text-sm">Aucune commande pour le moment</p>
             </div>
           ) : (
-            commandes.map((c, idx) => {
+            paged.map((c, idx) => {
               const badge = STATUT_BADGE[c.statut];
               return (
                 <div
@@ -613,6 +768,12 @@ export function Commandes() {
           )}
         </div>
       </div>
+
+      {filtered.length > 0 && (
+        <div className="rounded-2xl border border-gray-200 bg-white shadow-sm">
+          <Pagination page={page} totalPages={totalPages} pageSize={pageSize} total={total} onPageChange={setPage} onPageSizeChange={setPageSize} />
+        </div>
+      )}
 
       {/* Modal */}
       {showModal && (

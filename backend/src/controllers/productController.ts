@@ -30,6 +30,7 @@ export default crudController<model.Product>({
       num_article,
       nom,
       description: data.description == null ? undefined : String(data.description),
+      type: data.type == null ? undefined : String(data.type),
       prix: Number(data.prix) || 0,
       stock: Number(data.stock) || 0,
       stock_min: Number(data.stock_min) || 0,

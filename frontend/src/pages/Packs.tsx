@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Package, Plus, Pencil, Trash2, X, Inbox } from 'lucide-react';
+import { Package, Plus, Pencil, Trash2, X, Inbox, Search } from 'lucide-react';
 import type { Pack } from '../types';
 import { createPack, deletePack, getPacks, updatePack } from '../api/packs';
 import { getProducts } from '../api/articles';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { Modal } from '../components/Modal';
+import { Pagination, usePagination } from '../components/Pagination';
 
 interface PackForm {
   nom: string;
@@ -26,6 +27,7 @@ export function Packs() {
   const [form, setForm] = useState<PackForm>(emptyForm);
   const [formError, setFormError] = useState('');
   const [deleteTarget, setDeleteTarget] = useState<Pack | null>(null);
+  const [search, setSearch] = useState('');
 
   const load = async () => {
     try {
@@ -41,6 +43,14 @@ export function Packs() {
   };
 
   useEffect(() => { load(); }, []);
+
+  const q = search.toLowerCase();
+  const filteredPacks = packs.filter((p) => {
+    if (q && !p.nom.toLowerCase().includes(q) && !(p.description ?? '').toLowerCase().includes(q) && !p.items.some((i) => (i.num_article ?? '').toLowerCase().includes(q) || (i.nom ?? '').toLowerCase().includes(q))) return false;
+    return true;
+  });
+
+  const { page, pageSize, totalPages, paged, setPage, setPageSize, total } = usePagination(filteredPacks);
 
   const openCreate = () => {
     setEditing(null);
@@ -166,9 +176,21 @@ export function Packs() {
           </div>
           <div>
             <p className="text-sm font-medium text-gray-500">Total packs</p>
-            <p className="text-2xl font-bold text-gray-900">{packs.length}</p>
+            <p className="text-2xl font-bold text-gray-900">{filteredPacks.length}</p>
           </div>
         </div>
+      </div>
+
+      {/* Search */}
+      <div className="relative max-w-sm">
+        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+        <input
+          type="text"
+          placeholder="Rechercher un pack..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full rounded-xl border border-gray-200 bg-gray-50 py-2.5 pl-10 pr-4 text-sm transition-colors focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+        />
       </div>
 
       {/* Table — Desktop */}
@@ -193,7 +215,7 @@ export function Packs() {
                     </div>
                   </td>
                 </tr>
-              ) : packs.length === 0 ? (
+              ) : filteredPacks.length === 0 ? (
                 <tr>
                   <td colSpan={4} className="px-6 py-16 text-center">
                     <div className="flex flex-col items-center gap-3">
@@ -209,7 +231,7 @@ export function Packs() {
                     </div>
                   </td>
                 </tr>
-              ) : packs.map((p, i) => (
+              ) : paged.map((p, i) => (
                 <tr
                   key={p.id}
                   className="animate-fade-in-up transition-colors hover:bg-gray-50/50"
@@ -231,7 +253,7 @@ export function Packs() {
                           key={item.id}
                           className="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700"
                         >
-                          {item.quantite}x {item.num_article}
+                          {item.quantite}x {item.num_article} - {item.nom}
                         </span>
                       ))}
                     </div>
@@ -286,7 +308,7 @@ export function Packs() {
               </div>
             </div>
           </div>
-        ) : packs.map((p, i) => (
+        ) : paged.map((p, i) => (
           <div
             key={p.id}
             className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm animate-fade-in-up"
@@ -327,13 +349,19 @@ export function Packs() {
                   key={item.id}
                   className="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700"
                 >
-                  {item.quantite}x {item.num_article}
+                  {item.quantite}x {item.num_article} - {item.nom}
                 </span>
               ))}
             </div>
           </div>
         ))}
       </div>
+
+      {filteredPacks.length > 0 && (
+        <div className="rounded-2xl border border-gray-200 bg-white shadow-sm">
+          <Pagination page={page} totalPages={totalPages} pageSize={pageSize} total={total} onPageChange={setPage} onPageSizeChange={setPageSize} />
+        </div>
+      )}
 
       {/* Create / Edit Modal */}
       <Modal

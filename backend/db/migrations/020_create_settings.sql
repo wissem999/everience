@@ -7,9 +7,9 @@ CREATE TABLE IF NOT EXISTS `settings` (
 INSERT INTO `settings` (`setting_key`, `setting_value`) VALUES
 ('smtp_host', 'smtp.gmail.com'),
 ('smtp_port', '465'),
-('smtp_user', 'tl.wissem14@gmail.com'),
-('smtp_pass', 'klza wwzb fhoq idmh'),
-('mail_from', 'tl.wissem14@gmail.com'),
+('smtp_user', 'YOUR_EMAIL@gmail.com'),
+('smtp_pass', 'YOUR_APP_PASSWORD'),
+('mail_from', 'YOUR_EMAIL@gmail.com'),
 ('frontend_url', 'http://localhost:5173'),
 
 ('stock_alert_subject', '[Alerte] Article {num_article} en Besoin Actif'),

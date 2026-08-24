@@ -10,6 +10,7 @@ export interface Product {
   num_article: string;
   nom: string;
   description?: string;
+  type?: string;
   prix: number | string;
   stock: number;
   stock_min: number;
@@ -103,4 +104,18 @@ export interface Pack {
   nom: string;
   description?: string;
   items: PackItem[];
+}
+
+export interface Inventaire {
+  id: number;
+  numero_serie: string;
+  article_id: number;
+  statut: 'stock' | 'affecte';
+  client_id: number | null;
+  employee_name: string | null;
+  date_affectation?: string | null;
+  created_at?: string;
+  article_nom?: string;
+  num_article?: string;
+  client_nom?: string;
 }

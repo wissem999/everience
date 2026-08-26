@@ -5,11 +5,11 @@ CREATE TABLE IF NOT EXISTS `settings` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `settings` (`setting_key`, `setting_value`) VALUES
-('smtp_host', 'smtp.gmail.com'),
-('smtp_port', '465'),
-('smtp_user', 'YOUR_EMAIL@gmail.com'),
-('smtp_pass', 'YOUR_APP_PASSWORD'),
-('mail_from', 'YOUR_EMAIL@gmail.com'),
+('smtp_host', 'smtp.office365.com'),
+('smtp_port', '587'),
+('smtp_user', 'dsi-tunis@everience.com'),
+('smtp_pass', 'YOUR_PASSWORD_HERE'),
+('mail_from', 'dsi-tunis@everience.com'),
 ('frontend_url', 'http://localhost:5173'),
 
 ('stock_alert_subject', '[Alerte] Article {num_article} en Besoin Actif'),

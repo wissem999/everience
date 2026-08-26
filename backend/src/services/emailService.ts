@@ -266,8 +266,8 @@ export async function checkStockAlert(articleId: number, before: number, after: 
         stock: after,
         stock_min: article.stock_min,
       });
-    } catch (err) {
-      console.error('[mail] Echec envoi alerte stock:', err);
+    } catch {
+      // email not configured — skip silently
     }
   }
 }

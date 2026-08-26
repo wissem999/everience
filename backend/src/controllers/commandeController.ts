@@ -80,9 +80,7 @@ export const create = asyncHandler(async (req: AuthRequest, res: Response) => {
   const data = validate(req.body);
   const row = await model.create(data, req.user?.id);
   if (row) {
-    void sendDemandeDevis(toDevisInfo(row)).catch((err) =>
-      console.error('[mail] Echec envoi demande devis:', err)
-    );
+    void sendDemandeDevis(toDevisInfo(row)).catch(() => {});
   }
   res.status(201).json(row);
 });
@@ -138,9 +136,7 @@ export const approuver = asyncHandler(async (req: Request, res: Response) => {
   if (!row) throw new ApiError(404, 'Commande introuvable');
   if (row.statut !== 'soumis') throw new ApiError(400, 'Seule une commande soumise peut etre approuvee');
   const updated = await model.setStatut(row.id, 'approuve');
-  void sendCommandeApprouvee(toDevisInfo(row)).catch((err) =>
-    console.error('[mail] Echec envoi email finance:', err)
-  );
+  void sendCommandeApprouvee(toDevisInfo(row)).catch(() => {});
   res.json({ message: 'Commande approuvee', commande: updated });
 });
 
